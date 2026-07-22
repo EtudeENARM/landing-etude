@@ -1,0 +1,9 @@
+# Configuración de despliegue para Netlify.
+# Le dice a Netlify qué carpeta publicar y dónde vivirán las funciones.
+
+[build]
+  # Tu sitio (index.html, etc.) está dentro de la subcarpeta "site".
+  publish = "site"
+
+  # Aquí vivirá el autoresponder cuando lo construyamos (aún no existe, no pasa nada).
+  functions = "netlify/functions"

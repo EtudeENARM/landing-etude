@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etude ENARM — Razonamiento clínico para el ENARM</title>
+<meta name="description" content="La app de casos clínicos que entrena tu razonamiento diagnóstico. Retroalimentación que explica cada distractor, no solo la respuesta.">
+<meta property="og:title" content="Etude ENARM — Razonamiento clínico para el ENARM">
+<meta property="og:description" content="Un simulador ENARM diseñado para que no solo contestes preguntas: entiendas cómo llegar a la respuesta.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/logo-e-ink.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,sans-serif;
+    --ease-standard:cubic-bezier(0.32,0.72,0,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#08080B;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
+  .nums-expressive .num-expressive{font-family:"Space Grotesk",var(--font-sans)!important;font-feature-settings:"tnum" 1;letter-spacing:-0.04em;}
+  [data-idx]:active{transform:scale(.98);}
+  @keyframes pulseDot{0%,100%{opacity:1;}50%{opacity:.35;}}
+  @keyframes glowBreath{0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(.88);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}}
+  @keyframes ghostPulse{0%{box-shadow:0 0 0 0 rgba(11,11,15,.28);}70%{box-shadow:0 0 0 9px rgba(11,11,15,0);}100%{box-shadow:0 0 0 0 rgba(11,11,15,0);}}
+  @media(prefers-reduced-motion:reduce){[data-scrollsec]{height:auto!important}[data-scrollsec] [data-hint]{opacity:1!important}*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  a,button{transition:color .15s ease-out,opacity .15s ease-out,transform .15s ease-out;}
+  button:active,a[href="#unirme"]:active{transform:scale(.97);}
+  @media(hover:hover) and (pointer:fine){
+    button[type="submit"]:hover,a[href="#unirme"]:hover{opacity:.85;}
+    a[href="#como-funciona"]:hover{color:#fff!important;}
+    a[href$=".html"]:hover,a[href^="mailto:"]:hover{color:rgba(255,255,255,.8)!important;}
+    a[data-social]:hover{color:#fff!important;}
+    [data-idx]:hover{transform:translateY(-1px);}
+  }
+  ::selection{background:#0B0B0F;color:#fff;}
+  @media(max-width:860px){.ee-row{grid-template-columns:1fr!important}.ee-stats{grid-template-columns:1fr!important;text-align:center}.ee-grid3{grid-template-columns:1fr!important}.ee-stats .ee-bars{text-align:left}.ee-app{grid-template-columns:1fr!important;grid-template-areas:'head' 'tabs' 'phone'!important;row-gap:22px!important}.ee-app>div:last-child>div{width:256px!important}[data-apptabs]{position:relative;flex-direction:row!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px!important;margin:0 -24px;padding:2px 24px 6px;scrollbar-width:none}[data-apptabs]::-webkit-scrollbar{display:none}[data-apptabs] [data-tab]{flex:0 0 76%;max-width:300px;scroll-snap-align:center}}
+  @media(min-width:861px) and (max-width:1040px){.ee-grid3{grid-template-columns:1fr 1fr!important}}
+  @media(max-width:860px){[data-sidetext]{display:none!important}[data-phone]{--startx:0px}}
+</style>
+</head>
+<body>
+<section class="nums-expressive" style="width:100%;--bg-app:#F4F4F7;--bg-surface:#FFFFFF;--bg-chip:#EAEAEE;--bg-track:#E4E4E8;--fg-1:#0B0B0F;--fg-2:#8A8A8E;--fg-3:#B2B2B8;--line-hairline:#E7E7EB;--line-selected:#1C1C1E;--action-primary:#0B0B0F;--action-primary-fg:#FFFFFF;--shadow-card:0 1px 2px rgba(11,11,15,.05),0 1px 3px rgba(11,11,15,.04);--shadow-cta:0 6px 18px rgba(11,11,15,.18);--accent:#FFFFFF;--glow:color-mix(in srgb, var(--accent) 11%, transparent);--grid-alpha:0.03;background:var(--bg-app);">
+
+  <!-- HERO (dark) -->
+  <div style="position:relative;background:radial-gradient(120% 85% at 50% -8%, var(--glow) 0%, transparent 55%), #08080B;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:20px clamp(20px,5vw,48px);max-width:1160px;margin:0 auto;">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <img src="assets/logo-e-white.png" alt="Etude ENARM" style="height:30px;width:auto;display:block;">
+        <span style="color:#fff;font-size:18px;font-weight:600;letter-spacing:.2px;">Etude <b style="font-weight:700;letter-spacing:-.1px;">ENARM</b></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:26px;">
+        <a href="#como-funciona" style="color:rgba(255,255,255,.62);font-size:14.5px;text-decoration:none;font-weight:500;">Cómo funciona</a>
+        <a href="#unirme" style="color:#0B0B0F;background:#fff;font-size:14px;font-weight:600;padding:10px 20px;border-radius:999px;text-decoration:none;">Unirme a la lista</a>
+      </div>
+    </div>
+    <div style="max-width:820px;margin:0 auto;padding:clamp(48px,7vw,72px) clamp(20px,5vw,44px) clamp(64px,9vw,96px);text-align:center;">
+      <div data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 15px;margin-bottom:34px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#fff;animation:pulseDot 2s infinite;"></span>
+        <span style="color:rgba(255,255,255,.66);font-size:11.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;">Simulador de casos clínicos · ENARM</span>
+      </div>
+      <h1 data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .08s,transform .6s var(--ease-standard) .08s;color:#fff;font-size:clamp(38px,7vw,66px);line-height:1.04;font-weight:800;letter-spacing:-2.2px;margin-bottom:26px;">Entrena el razonamiento clínico que el ENARM exige.</h1>
+      <p data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .16s,transform .6s var(--ease-standard) .16s;color:rgba(255,255,255,.6);font-size:clamp(16px,2.4vw,19px);line-height:1.6;max-width:540px;margin:0 auto 44px;font-weight:400;">Un simulador ENARM diseñado para que no solo contestes preguntas: entiendas cómo llegar a la respuesta.</p>
+      <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" action="/gracias" style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .24s,transform .6s var(--ease-standard) .24s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
+        <input type="hidden" name="form-name" value="waitlist">
+        <input name="email" type="email" required placeholder="tucorreo@gmail.com" style="flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#fff;font-family:var(--font-sans);font-size:15px;padding:15px 20px;border-radius:999px;outline:none;">
+        <button type="submit" style="background:#fff;color:#0B0B0F;border:none;font-family:var(--font-sans);font-size:15px;font-weight:600;padding:15px 26px;border-radius:999px;cursor:pointer;white-space:nowrap;">Unirme</button>
+      </form>
+      <p data-wl-ok style="display:none;color:#fff;font-size:15px;font-weight:600;margin-top:16px;"></p>
+      <p data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .32s,transform .6s var(--ease-standard) .32s;color:rgba(255,255,255,.4);font-size:13px;margin-top:16px;">Más de 1,000 preguntas al lanzamiento · Basadas en GPC y PRONAM · iOS y Android</p>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <div style="padding:clamp(72px,10vw,104px) clamp(20px,5vw,44px) 40px;text-align:center;max-width:760px;margin:0 auto;">
+    <p data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-2);margin-bottom:22px;">La clave de hacer casos</p>
+    <h2 data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .08s,transform .55s var(--ease-standard) .08s;font-size:clamp(30px,5vw,44px);line-height:1.14;font-weight:700;letter-spacing:-1.2px;color:var(--fg-1);margin-bottom:22px;">Repetir preguntas sin contexto solo acumula intentos.</h2>
+    <p data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .16s,transform .55s var(--ease-standard) .16s;font-size:18px;line-height:1.65;color:var(--fg-2);max-width:560px;margin:0 auto;">El progreso real aparece cuando identificas la trampa, entiendes el razonamiento y ajustas tu forma de decidir para la próxima vez.</p>
+  </div>
+
+  <!-- DEMO (scroll-driven: costado -> centro) -->
+  <div id="como-funciona" data-scrollsec style="position:relative;height:200vh;--p:0;--mp:0;">
+    <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden;">
+      <div data-hint style="position:absolute;top:clamp(14px, 6vh, 64px);left:50%;transform:translateX(-50%);opacity:0;z-index:7;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="background:#fff;color:#0B0B0F;font-size:14.5px;font-weight:700;letter-spacing:-.1px;padding:11px 22px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);white-space:nowrap;">Resuelve el caso ↓</span></div>
+      <div data-pedestal style="position:absolute;left:50%;top:50%;width:min(620px,92vw);height:min(680px,90vh);transform:translate(-50%,-50%);border-radius:44px;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%, #1b1b22 0%, #0B0B0F 62%);box-shadow:0 40px 100px rgba(11,11,15,.4);opacity:var(--mp);pointer-events:none;">
+        <div style="position:absolute;left:50%;top:46%;width:460px;height:460px;max-width:120%;transform:translate(-50%,-50%);background:radial-gradient(circle, rgba(255,255,255,.14) 0%, transparent 62%);animation:glowBreath 5.5s ease-in-out infinite;"></div>
+        <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;border-radius:50%;background:#fff;animation:pulseDot 2s infinite;"></span><span style="color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;white-space:nowrap;">Demo interactivo</span></div>
+      </div>
+      <div style="position:relative;width:100%;max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;align-items:center;justify-content:center;">
+        <div data-sidetext style="position:absolute;left:clamp(20px,5vw,48px);max-width:400px;text-align:left;z-index:3;opacity:clamp(0, calc(1 - var(--mp) * 2.2), 1);transform:translateX(calc(var(--mp) * -64px));pointer-events:none;">
+          <p style="font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-2);margin-bottom:16px;">Cómo funciona</p>
+          <h2 style="font-size:clamp(28px,3.6vw,40px);line-height:1.14;font-weight:700;letter-spacing:-1.2px;color:var(--fg-1);margin-bottom:16px;">Convierte cada caso en criterio clínico</h2>
+          <p style="font-size:17px;line-height:1.65;color:var(--fg-2);margin-bottom:24px;">Cada opción tiene su explicación: qué la hace correcta, qué la vuelve atractiva cuando es falsa, y cómo distinguirlas la próxima vez.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--fg-1);font-weight:700;">—</span><span style="font-size:15px;color:var(--fg-1);line-height:1.5;">Aprende qué dato cambia el diagnóstico.</span></div>
+            <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--fg-1);font-weight:700;">—</span><span style="font-size:15px;color:var(--fg-1);line-height:1.5;">Identifica por qué una opción "sonaba correcta".</span></div>
+            <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--fg-1);font-weight:700;">—</span><span style="font-size:15px;color:var(--fg-1);line-height:1.5;">Ajusta tu regla mental para no caer en lo mismo.</span></div>
+          </div>
+        </div>
+        <div data-phone style="position:relative;z-index:4;transform:translateX(calc((1 - var(--mp)) * var(--startx,240px))) scale(calc(.82 + var(--mp) * .18));transform-origin:center;will-change:transform;">
+          <div style="width:340px;max-width:100%;background:#0B0B0F;border-radius:48px;padding:13px;box-shadow:0 30px 70px rgba(11,11,15,.3),0 0 0 1px rgba(255,255,255,.06);">
+            <div style="background:var(--bg-app);border-radius:37px;overflow:hidden;position:relative;padding:20px 16px;">
+              <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:84px;height:20px;background:#0B0B0F;border-radius:0 0 13px 13px;z-index:2;"></div>
+            <div data-demo="preeclampsia" style="padding-top:14px;">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+                <span style="font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--fg-2);">Caso clínico</span>
+                <span style="font-size:9.5px;background:var(--bg-chip);border-radius:999px;padding:2px 8px;color:var(--fg-2);font-weight:600;">Seriado 1/2</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:14px;padding:11px 13px;font-size:11.5px;line-height:1.5;color:var(--fg-1);text-align:justify;margin-bottom:12px;">Mujer de 32 años, G3P2, 37 SDG. TA 152/98 mmHg confirmada. Cefalea leve. Plaquetas 190,000, TGO 35, creatinina 0.8, proteínas en orina 24 h: 420 mg. Bienestar fetal conservado.</div>
+              <p style="font-size:12.5px;font-weight:600;color:var(--fg-1);margin-bottom:11px;line-height:1.35;">¿Cómo se clasifica este cuadro?</p>
+              <div data-idx="0" style="background:#fff;border:1.5px solid var(--line-hairline);border-radius:14px;padding:11px 13px;font-size:11.5px;color:var(--fg-1);margin-bottom:7px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .18s ease-out,background .18s ease-out,transform .15s ease-out;"><span>A) Hipertensión gestacional</span><span data-mark style="font-weight:700;"></span></div>
+              <div data-idx="1" style="background:#fff;border:1.5px solid var(--line-hairline);border-radius:14px;padding:11px 13px;font-size:11.5px;color:var(--fg-1);margin-bottom:7px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .18s ease-out,background .18s ease-out,transform .15s ease-out;"><span>B) Preeclampsia sin datos de severidad</span><span data-mark style="font-weight:700;"></span></div>
+              <div data-idx="2" style="background:#fff;border:1.5px solid var(--line-hairline);border-radius:14px;padding:11px 13px;font-size:11.5px;color:var(--fg-1);margin-bottom:7px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .18s ease-out,background .18s ease-out,transform .15s ease-out;"><span>C) Preeclampsia con datos de severidad</span><span data-mark style="font-weight:700;"></span></div>
+              <div data-idx="3" style="background:#fff;border:1.5px solid var(--line-hairline);border-radius:14px;padding:11px 13px;font-size:11.5px;color:var(--fg-1);margin-bottom:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .18s ease-out,background .18s ease-out,transform .15s ease-out;"><span>D) Hipertensión crónica</span><span data-mark style="font-weight:700;"></span></div>
+              <div data-exp style="background:#fff;border:1px solid var(--line-hairline);border-radius:14px;padding:12px 13px;min-height:56px;">
+                <div data-exp-verdict style="font-size:11px;font-weight:700;color:var(--fg-1);margin-bottom:2px;"></div>
+                <div data-exp-name style="font-size:9.5px;color:var(--fg-2);margin-bottom:6px;"></div>
+                <div data-exp-text style="font-size:10.5px;line-height:1.5;color:var(--fg-2);">Selecciona una opción para ver la explicación.</div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LA APP (dark inset, interactive tabs) -->
+  <div style="padding:clamp(56px,8vw,88px) clamp(20px,5vw,44px) 0;max-width:1120px;margin:0 auto;">
+    <div class="ee-app" style="background:#08080B;border-radius:28px;padding:clamp(44px,6vw,72px) clamp(24px,5vw,64px);display:grid;grid-template-columns:1fr 340px;grid-template-areas:'head phone' 'tabs phone';column-gap:clamp(40px,5vw,80px);row-gap:28px;align-items:center;background-image:radial-gradient(100% 90% at 85% 0%, var(--glow) 0%, transparent 60%);">
+      <div data-reveal style="grid-area:head;opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);">
+        <p style="font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:16px;">Dentro de la app</p>
+        <h2 style="font-size:clamp(26px,4vw,34px);line-height:1.15;font-weight:700;letter-spacing:-1px;color:#fff;margin-bottom:16px;">Así se ve. Sin maquetas.</h2>
+        <p style="font-size:16px;line-height:1.6;color:rgba(255,255,255,.6);margin-bottom:28px;">Capturas reales de Etude ENARM. Más de 1,000 preguntas organizadas por especialidad al lanzamiento.</p>
+      </div>
+      <div data-apptabs data-reveal style="grid-area:tabs;opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .05s,transform .55s var(--ease-standard) .05s;display:flex;flex-direction:column;gap:6px;">
+          <div data-tab="0" role="button" tabindex="0" style="text-align:left;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);border-radius:16px;padding:14px 18px;transition:border-color .18s ease-out,background .18s ease-out;"><span style="display:block;font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;">Configura tu sesión</span><span style="display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.55);">Modo aleatorio o por especialidad, de 1 a 50 preguntas.</span></div>
+          <div data-tab="1" role="button" tabindex="0" style="text-align:left;cursor:pointer;border:1px solid transparent;background:transparent;border-radius:16px;padding:14px 18px;transition:border-color .18s ease-out,background .18s ease-out;"><span style="display:block;font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;">Estudia solo lo que fallas</span><span style="display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.55);">Filtra por nuevas, solo incorrectas o solo correctas.</span></div>
+          <div data-tab="2" role="button" tabindex="0" style="text-align:left;cursor:pointer;border:1px solid transparent;background:transparent;border-radius:16px;padding:14px 18px;transition:border-color .18s ease-out,background .18s ease-out;"><span style="display:block;font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;">Tu progreso, medible</span><span style="display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.55);">Puntuación global y preguntas contestadas, siempre al día.</span></div>
+          <div data-tab="3" role="button" tabindex="0" style="text-align:left;cursor:pointer;border:1px solid transparent;background:transparent;border-radius:16px;padding:14px 18px;transition:border-color .18s ease-out,background .18s ease-out;"><span style="display:block;font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;">Desglose por especialidad</span><span style="display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.55);">Detecta tus áreas débiles de un vistazo.</span></div>
+          <div data-tab="4" role="button" tabindex="0" style="text-align:left;cursor:pointer;border:1px solid transparent;background:transparent;border-radius:16px;padding:14px 18px;transition:border-color .18s ease-out,background .18s ease-out;"><span style="display:block;font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;">Historial de sesiones</span><span style="display:block;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.55);">Vuelve a cualquier sesión previa y revisa cómo la resolviste.</span></div>
+      </div>
+      <div data-reveal style="grid-area:phone;opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .1s,transform .55s var(--ease-standard) .1s;display:flex;justify-content:center;">
+        <div style="width:300px;max-width:78vw;background:#0B0B0F;border-radius:44px;padding:12px;box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.09);">
+          <div data-appscreen style="position:relative;border-radius:34px;overflow:hidden;background:#000;aspect-ratio:1206/2459;">
+            <img src="images/app-simulador.png" alt="Pantalla Simulador de Etude ENARM" data-shot="0" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;transition:opacity .3s ease-out;">
+            <img src="images/app-filtros.png" alt="Filtros de estudio de Etude ENARM" data-shot="1" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s ease-out;">
+            <img src="images/app-stats.png" alt="Estadísticas de Etude ENARM" data-shot="2" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s ease-out;">
+            <img src="images/app-especialidad.png" alt="Puntaje por especialidad de Etude ENARM" data-shot="3" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s ease-out;">
+            <img src="images/app-historial.png" alt="Historial de sesiones de Etude ENARM" data-shot="4" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s ease-out;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- STATS (dark inset) -->
+  <div style="padding:clamp(56px,8vw,88px) clamp(20px,5vw,44px) 0;max-width:1120px;margin:0 auto;">
+    <div class="ee-stats" style="background:#08080B;border-radius:28px;padding:clamp(44px,6vw,76px) clamp(24px,5vw,64px);display:grid;grid-template-columns:360px 1fr;gap:clamp(40px,5vw,72px);align-items:center;background-image:radial-gradient(100% 90% at 15% 0%, var(--glow) 0%, transparent 60%);">
+      <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);display:flex;flex-direction:column;align-items:center;">
+        <div style="position:relative;width:220px;height:220px;max-width:60vw;">
+        <svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block;">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="11"></circle>
+          <circle data-ring="61.82" cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="11" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 1.5s var(--ease-standard);"></circle>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;">
+          <div class="num-expressive" data-count="61.82" data-dec="2" data-suffix="%" style="font-size:38px;font-weight:700;letter-spacing:-1px;color:#fff;">0.00%</div>
+          <div style="font-size:12.5px;color:rgba(255,255,255,.5);margin-top:4px;">68 de 110 correctas</div>
+        </div>
+        </div>
+      </div>
+      <div class="ee-bars" data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .12s,transform .55s var(--ease-standard) .12s;">
+        <p style="font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:16px;">Seguimiento de progreso</p>
+        <h2 style="font-size:clamp(26px,4vw,34px);line-height:1.15;font-weight:700;letter-spacing:-1px;color:#fff;margin-bottom:16px;">Sabe exactamente dónde estás parado</h2>
+        <p style="font-size:16px;line-height:1.6;color:rgba(255,255,255,.6);margin-bottom:30px;">Puntuación global, desglose por especialidad y preguntas respondidas. Identifica en segundos qué necesita más trabajo antes del examen.</p>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:14px;color:#fff;font-weight:500;">Obstetricia</span><span class="num-expressive" style="font-size:14px;color:#fff;font-weight:700;">77%</span></div><div style="height:7px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden;"><div data-bar="77" style="height:100%;width:0;background:var(--accent);border-radius:999px;transition:width 1.2s var(--ease-standard) .1s;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:14px;color:#fff;font-weight:500;">Ginecología</span><span class="num-expressive" style="font-size:14px;color:#fff;font-weight:700;">61%</span></div><div style="height:7px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden;"><div data-bar="61" style="height:100%;width:0;background:var(--accent);border-radius:999px;transition:width 1.2s var(--ease-standard) .2s;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:14px;color:#fff;font-weight:500;">Cardiología</span><span class="num-expressive" style="font-size:14px;color:#fff;font-weight:700;">33%</span></div><div style="height:7px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden;"><div data-bar="33" style="height:100%;width:0;background:var(--accent);border-radius:999px;transition:width 1.2s var(--ease-standard) .3s;"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div style="padding:clamp(72px,10vw,100px) clamp(20px,5vw,44px) 40px;max-width:1040px;margin:0 auto;">
+    <div data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);text-align:center;margin-bottom:56px;">
+      <p style="font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--fg-2);margin-bottom:14px;">Lo que incluye</p>
+      <h2 style="font-size:clamp(30px,4.5vw,40px);font-weight:700;letter-spacing:-1.2px;color:var(--fg-1);">Solo lo esencial</h2>
+    </div>
+    <div class="ee-grid3" data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .1s,transform .55s var(--ease-standard) .1s;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Retroalimentación por distractores</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Cada opción incorrecta tiene su explicación. Entiendes por qué confundía.</p></div>
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.3v13M12 6.3C10.8 5.5 9.2 5 7.5 5S4.2 5.5 3 6.3v13C4.2 18.5 5.8 18 7.5 18s3.3.5 4.5 1.3m0-13C13.2 5.5 14.8 5 16.5 5S19.8 5.5 21 6.3v13C19.8 18.5 18.2 18 16.5 18s-3.3.5-4.5 1.3"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Basado en GPC y PRONAM</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Casos sobre Guías de Práctica Clínica y el PRONAM vigente, alineados al examen real.</p></div>
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Múltiples modos de estudio</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Por especialidad, aleatorio, o filtra tus incorrectas de sesiones previas.</p></div>
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Estadísticas por especialidad</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Tu porcentaje de aciertos por especialidad. Sabe dónde invertir tiempo.</p></div>
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Historial de sesiones</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Revisa sesiones anteriores y mide tu progreso a lo largo de la preparación.</p></div>
+      <div style="background:#fff;border:1px solid var(--line-hairline);border-radius:20px;padding:28px;box-shadow:var(--shadow-card);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-chip);display:flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h7v7l9-11h-7z"/></svg></div><h3 style="font-size:17px;font-weight:600;color:var(--fg-1);margin-bottom:8px;letter-spacing:-.2px;">Diseño sin saturación</h3><p style="font-size:14px;line-height:1.55;color:var(--fg-2);">Interfaz limpia para estudiar desde el celular sin cansarte visualmente.</p></div>
+    </div>
+  </div>
+
+  <!-- CTA (dark) + footer -->
+  <div id="unirme" style="margin-top:clamp(64px,9vw,100px);padding:clamp(72px,9vw,96px) clamp(20px,5vw,44px) 0;text-align:center;background:radial-gradient(120% 100% at 50% 120%, var(--glow) 0%, transparent 55%), #08080B;">
+    <h2 data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);color:#fff;font-size:clamp(34px,6vw,52px);line-height:1.08;font-weight:800;letter-spacing:-1.8px;margin-bottom:20px;">Prepárate diferente. Llega diferente.</h2>
+    <p data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .08s,transform .55s var(--ease-standard) .08s;color:rgba(255,255,255,.55);font-size:18px;max-width:420px;margin:0 auto 40px;line-height:1.6;">Sé el primero en saber cuando Etude ENARM esté disponible.</p>
+    <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" action="/gracias" style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .16s,transform .55s var(--ease-standard) .16s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
+      <input type="hidden" name="form-name" value="waitlist">
+      <input name="email" type="email" required placeholder="tucorreo@gmail.com" style="flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#fff;font-family:var(--font-sans);font-size:15px;padding:15px 20px;border-radius:999px;outline:none;">
+      <button type="submit" style="background:#fff;color:#0B0B0F;border:none;font-family:var(--font-sans);font-size:15px;font-weight:600;padding:15px 26px;border-radius:999px;cursor:pointer;white-space:nowrap;">Unirme</button>
+    </form>
+    <p data-wl-ok style="display:none;color:#fff;font-size:15px;font-weight:600;margin-top:16px;"></p>
+    <div style="max-width:1120px;margin:80px auto 0;padding:32px 0;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:center;gap:9px;"><img src="assets/logo-e-white.png" style="height:24px;width:auto;"><span style="color:#fff;font-size:15px;font-weight:600;">Etude <b style="font-weight:700;letter-spacing:-.1px;">ENARM</b></span></div>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;"><a href="privacidad.html" style="color:rgba(255,255,255,.45);font-size:13px;text-decoration:none;">Privacidad</a><a href="terminos.html" style="color:rgba(255,255,255,.45);font-size:13px;text-decoration:none;">Términos</a><a href="mailto:etude.enarm@gmail.com" style="color:rgba(255,255,255,.45);font-size:13px;text-decoration:none;">Contacto</a><a data-social href="https://www.instagram.com/etude.enarm/" target="_blank" rel="noopener" aria-label="Instagram de Etude ENARM" style="color:rgba(255,255,255,.45);display:flex;align-items:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:block;"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"></circle></svg></a><a data-social href="https://www.facebook.com/EtudeENARM/" target="_blank" rel="noopener" aria-label="Facebook de Etude ENARM" style="color:rgba(255,255,255,.45);display:flex;align-items:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" style="display:block;"><path d="M13.5 21.5v-7.4h2.7l.4-3.1h-3.1V9c0-.9.3-1.5 1.6-1.5h1.7V4.7c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.3H7.7v3.1h2.7v7.4z"></path></svg></a></div>
+      <span style="color:rgba(255,255,255,.35);font-size:13px;">© 2026 Etude ENARM</span>
+    </div>
+  </div>
+
+</section>
+<script>
+(function(){
+  'use strict';
+
+  var demos = {
+    preeclampsia: { options: [
+      { correct:false, verdict:'Incorrecta', name:'Opción A — Hipertensión gestacional', text:'La hipertensión gestacional <strong>no cursa con proteinuria</strong>. Esta paciente tiene 420 mg/24 h (&gt;300 mg), lo que la clasifica como preeclampsia.' },
+      { correct:true, verdict:'Correcta', name:'Opción B — Preeclampsia sin datos de severidad', text:'<strong>TA ≥140/90</strong> tras la semana 20 con <strong>proteinuria ≥300 mg/24 h</strong> (420 mg) cumple criterios de preeclampsia. Sin datos de severidad: TA &lt;160/110, plaquetas &gt;100 k, transaminasas y creatinina normales.' },
+      { correct:false, verdict:'Incorrecta', name:'Opción C — Preeclampsia con datos de severidad', text:'La severidad exige al menos un criterio: <strong>TA ≥160/110</strong>, plaquetas &lt;100 k, transaminasas 2× normal, creatinina &gt;1.1 o síntomas neurológicos. No cumple ninguno.' },
+      { correct:false, verdict:'Incorrecta', name:'Opción D — Hipertensión crónica', text:'La hipertensión crónica se diagnostica <strong>antes de la semana 20</strong> o con antecedente previo. No hay hipertensión preexistente documentada.' }
+    ]}
+  };
+
+  /* ---------- reveal on scroll ---------- */
+  var seen = new WeakSet();
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting && !seen.has(e.target)) { seen.add(e.target); activate(e.target); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('[data-reveal]').forEach(function(el){ io.observe(el); });
+
+  function activate(el){
+    el.style.opacity = '1'; el.style.transform = 'none';
+    var targets = [el].concat(Array.prototype.slice.call(el.querySelectorAll('[data-bar],[data-ring],[data-count]')));
+    targets.forEach(animateEl);
+  }
+
+  function animateEl(el){
+    if (el.hasAttribute('data-bar')) { requestAnimationFrame(function(){ el.style.width = el.getAttribute('data-bar') + '%'; }); }
+    if (el.hasAttribute('data-ring')) {
+      var pct = parseFloat(el.getAttribute('data-ring'));
+      requestAnimationFrame(function(){ el.style.strokeDashoffset = String(326.7 * (1 - pct / 100)); });
+    }
+    if (el.hasAttribute('data-count')) { countUp(el); }
+  }
+
+  function countUp(el){
+    var end = parseFloat(el.getAttribute('data-count'));
+    var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1300, t0 = performance.now();
+    function tick(t){
+      var p = Math.min(1, (t - t0) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (end * eased).toFixed(dec) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- scroll-driven demo (inertial) ---------- */
+  var sec = document.querySelector('[data-scrollsec]');
+  var raf = null, cur, casc = false, answered = false, hintShown = false, pulseTimer;
+
+  function onScroll(){ if (!raf) raf = requestAnimationFrame(tick); }
+
+  function tick(){
+    raf = null;
+    if (!sec) return;
+    var total = sec.offsetHeight - window.innerHeight;
+    var target = total > 0 ? Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / total)) : 0;
+    cur = (cur === undefined) ? target : cur + (target - cur) * 0.16;
+    if (Math.abs(target - cur) > 0.0006) { raf = requestAnimationFrame(tick); } else { cur = target; }
+    var p = cur;
+    var rawv = Math.min(1, p / 0.5);
+    var mp = rawv < 0.5 ? 2 * rawv * rawv : 1 - Math.pow(-2 * rawv + 2, 2) / 2;
+    sec.style.setProperty('--p', p.toFixed(4));
+    sec.style.setProperty('--mp', mp.toFixed(4));
+    if (p > 0.5 && !casc) { casc = true; arrivalMoment(); }
+    if (casc && !answered) {
+      var show = p > 0.48;
+      if (show !== hintShown) {
+        hintShown = show;
+        var hint = document.querySelector('[data-hint]');
+        if (hint) hint.animate([{ opacity: show ? 0 : 1 }, { opacity: show ? 1 : 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+      }
+    }
+  }
+
+  if (sec) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
+  }
+
+  function arrivalMoment(){
+    var demo = document.querySelector('[data-demo]');
+    if (!demo) return;
+    hintShown = true;
+    var hint = document.querySelector('[data-hint]');
+    if (hint) {
+      hint.style.opacity = '1';
+      hint.animate([
+        { opacity: 0, transform: 'translateX(-50%) translateY(-14px) scale(.85)' },
+        { opacity: 1, transform: 'translateX(-50%) translateY(2px) scale(1.03)' },
+        { opacity: 1, transform: 'translateX(-50%) translateY(0) scale(1)' }
+      ], { duration: 620, delay: 480, easing: 'cubic-bezier(.34,1.3,.5,1)', fill: 'backwards' });
+    }
+    var target = demo.querySelector('[data-idx="1"]');
+    if (target && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      pulseTimer = setTimeout(function(){
+        target.style.animation = 'ghostPulse 2.8s ease-out .2s infinite';
+      }, 1400);
+    }
+  }
+
+  function endInvitation(){
+    answered = true;
+    clearTimeout(pulseTimer);
+    var hint = document.querySelector('[data-hint]');
+    if (hint && hint.style.opacity === '1') {
+      hint.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 320, easing: 'ease-out', fill: 'forwards' });
+    }
+    document.querySelectorAll('[data-idx]').forEach(function(o){ o.style.animation = 'none'; });
+  }
+
+  /* ---------- interactive case ---------- */
+  document.querySelectorAll('[data-demo] [data-idx]').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      var demo = opt.closest('[data-demo]');
+      var id = demo.getAttribute('data-demo');
+      var idx = parseInt(opt.getAttribute('data-idx'), 10);
+      var info = (demos[id] || demos.preeclampsia).options[idx];
+      endInvitation();
+      demo.querySelectorAll('[data-idx]').forEach(function(o){
+        o.style.borderColor = 'var(--line-hairline)';
+        o.style.background = '#fff';
+        o.style.boxShadow = 'none';
+        o.style.opacity = '1';
+        var m = o.querySelector('[data-mark]'); if (m) m.textContent = '';
+      });
+      var mark = opt.querySelector('[data-mark]');
+      if (info.correct) { opt.style.borderColor = 'var(--line-selected)'; opt.style.boxShadow = '0 0 0 3px rgba(11,11,15,.07)'; if (mark) mark.textContent = '✓'; }
+      else { opt.style.background = 'var(--bg-chip)'; if (mark) mark.textContent = '✕'; }
+      demo.querySelectorAll('[data-idx]').forEach(function(o){ if (o !== opt) o.style.opacity = '.5'; });
+      opt.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.035)' }, { transform: 'scale(1)' }],
+        { duration: 300, easing: 'cubic-bezier(.34,1.4,.5,1)' });
+      if (mark) {
+        mark.style.display = 'inline-block';
+        mark.animate([{ transform: 'scale(.5)', opacity: 0 }, { transform: 'scale(1.25)', opacity: 1 }, { transform: 'scale(1)', opacity: 1 }],
+          { duration: 360, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+      }
+      var box = demo.querySelector('[data-exp]');
+      if (box) {
+        box.querySelector('[data-exp-verdict]').textContent = info.verdict;
+        box.querySelector('[data-exp-name]').textContent = info.name;
+        var txt = box.querySelector('[data-exp-text]');
+        txt.innerHTML = info.text;
+        txt.style.color = 'var(--fg-1)';
+        box.animate([{ opacity: .3, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 360, easing: 'cubic-bezier(.32,.72,0,1)' });
+      }
+    });
+  });
+
+  /* ---------- app screenshots tabs ---------- */
+  (function(){
+    var wrap = document.querySelector('[data-apptabs]');
+    var screen = document.querySelector('[data-appscreen]');
+    if (!wrap || !screen) return;
+    var tabs = wrap.querySelectorAll('[data-tab]');
+    var shots = screen.querySelectorAll('[data-shot]');
+    var mob = window.matchMedia('(max-width:860px)');
+    var current = 0, timer = null, touched = false;
+    function paint(){
+      tabs.forEach(function(t){
+        var on = t.getAttribute('data-tab') == current;
+        if (mob.matches) {
+          t.style.borderColor = on ? 'rgba(255,255,255,.38)' : 'rgba(255,255,255,.1)';
+          t.style.background = on ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.02)';
+        } else {
+          t.style.borderColor = on ? 'rgba(255,255,255,.14)' : 'transparent';
+          t.style.background = on ? 'rgba(255,255,255,.05)' : 'transparent';
+        }
+      });
+    }
+    paint();
+    mob.addEventListener('change', paint);
+    function go(i, fromScroll){
+      if (i !== current) {
+        current = i;
+        shots.forEach(function(s){ s.style.opacity = s.getAttribute('data-shot') == i ? '1' : '0'; });
+        paint();
+      }
+      if (mob.matches && !fromScroll) {
+        var t = tabs[i];
+        wrap.scrollTo({ left: t.offsetLeft - (wrap.clientWidth - t.offsetWidth) / 2, behavior: 'smooth' });
+      }
+    }
+    var st;
+    wrap.addEventListener('scroll', function(){
+      if (!mob.matches) return;
+      clearTimeout(st);
+      st = setTimeout(function(){
+        var cx = wrap.scrollLeft + wrap.clientWidth / 2, best = 0, bd = Infinity;
+        tabs.forEach(function(t, k){
+          var d = Math.abs(t.offsetLeft + t.offsetWidth / 2 - cx);
+          if (d < bd) { bd = d; best = k; }
+        });
+        go(best, true);
+      }, 90);
+    }, { passive: true });
+    wrap.addEventListener('touchstart', function(){ touched = true; if (timer) { clearInterval(timer); timer = null; } }, { passive: true });
+    tabs.forEach(function(t){
+      function pick(){ touched = true; clearInterval(timer); go(parseInt(t.getAttribute('data-tab'), 10)); }
+      t.addEventListener('click', pick);
+      t.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    });
+    var seen2 = false;
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting && !seen2 && !touched) {
+          seen2 = true;
+          if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            timer = setInterval(function(){ if (!touched) go((current + 1) % shots.length); }, 4000);
+          }
+        } else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; seen2 = false; }
+      });
+    }, { threshold: 0.4 }).observe(screen);
+  })();
+
+  /* ---------- Netlify waitlist forms ---------- */
+  document.querySelectorAll('form[data-wl]').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(form);
+      var done = function(){
+        form.style.display = 'none';
+        var ok = form.parentNode.querySelector('[data-wl-ok]');
+        if (ok) { ok.textContent = '✓ Listo. Te avisamos cuando lancemos.'; ok.style.display = 'block'; }
+      };
+      fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:new URLSearchParams(data).toString() }).then(done).catch(done);
+    });
+  });
+})();
+</script>
+</body>
+</html>

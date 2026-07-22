@@ -1,0 +1,12 @@
+# Archivos del sistema (macOS los crea solos)
+.DS_Store
+
+# Secretos y variables de entorno — NUNCA deben subirse
+.env
+.env.*
+
+# Dependencias (si algún día usamos Node para las funciones)
+node_modules/
+
+# Registros
+*.log
