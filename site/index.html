@@ -62,8 +62,9 @@
       </div>
       <h1 data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .08s,transform .6s var(--ease-standard) .08s;color:#fff;font-size:clamp(38px,7vw,66px);line-height:1.04;font-weight:800;letter-spacing:-2.2px;margin-bottom:26px;">Entrena el razonamiento clínico que el ENARM exige.</h1>
       <p data-reveal style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .16s,transform .6s var(--ease-standard) .16s;color:rgba(255,255,255,.6);font-size:clamp(16px,2.4vw,19px);line-height:1.6;max-width:540px;margin:0 auto 44px;font-weight:400;">Un simulador ENARM diseñado para que no solo contestes preguntas: entiendas cómo llegar a la respuesta.</p>
-      <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" action="/gracias" style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .24s,transform .6s var(--ease-standard) .24s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
+      <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/gracias" style="opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease-standard) .24s,transform .6s var(--ease-standard) .24s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
         <input type="hidden" name="form-name" value="waitlist">
+        <p style="display:none;" aria-hidden="true"><label>No llenes esto si eres humano: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
         <input name="email" type="email" required placeholder="tucorreo@gmail.com" style="flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#fff;font-family:var(--font-sans);font-size:15px;padding:15px 20px;border-radius:999px;outline:none;">
         <button type="submit" style="background:#fff;color:#0B0B0F;border:none;font-family:var(--font-sans);font-size:15px;font-weight:600;padding:15px 26px;border-radius:999px;cursor:pointer;white-space:nowrap;">Unirme</button>
       </form>
@@ -204,8 +205,9 @@
   <div id="unirme" style="margin-top:clamp(64px,9vw,100px);padding:clamp(72px,9vw,96px) clamp(20px,5vw,44px) 0;text-align:center;background:radial-gradient(120% 100% at 50% 120%, var(--glow) 0%, transparent 55%), #08080B;">
     <h2 data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard);color:#fff;font-size:clamp(34px,6vw,52px);line-height:1.08;font-weight:800;letter-spacing:-1.8px;margin-bottom:20px;">Prepárate diferente. Llega diferente.</h2>
     <p data-reveal style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .08s,transform .55s var(--ease-standard) .08s;color:rgba(255,255,255,.55);font-size:18px;max-width:420px;margin:0 auto 40px;line-height:1.6;">Sé el primero en saber cuando Etude ENARM esté disponible.</p>
-    <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" action="/gracias" style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .16s,transform .55s var(--ease-standard) .16s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
+    <form data-reveal data-wl name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/gracias" style="opacity:0;transform:translateY(20px);transition:opacity .55s var(--ease-standard) .16s,transform .55s var(--ease-standard) .16s;display:flex;gap:10px;max-width:440px;margin:0 auto;">
       <input type="hidden" name="form-name" value="waitlist">
+        <p style="display:none;" aria-hidden="true"><label>No llenes esto si eres humano: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
       <input name="email" type="email" required placeholder="tucorreo@gmail.com" style="flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#fff;font-family:var(--font-sans);font-size:15px;padding:15px 20px;border-radius:999px;outline:none;">
       <button type="submit" style="background:#fff;color:#0B0B0F;border:none;font-family:var(--font-sans);font-size:15px;font-weight:600;padding:15px 26px;border-radius:999px;cursor:pointer;white-space:nowrap;">Unirme</button>
     </form>
