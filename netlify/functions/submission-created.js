@@ -89,12 +89,37 @@ exports.handler = async (event) => {
     if (!res.ok) {
       const errText = await res.text();
       console.error('submission-created: Resend devolvió error', res.status, errText);
-      // Devolvemos 200 para que Netlify no reintente en bucle; el error queda en los logs.
-      return { statusCode: 200, body: 'Error al enviar (registrado en logs).' };
+    } else {
+      console.log('submission-created: invitación enviada a', email);
     }
 
-    console.log('submission-created: invitación enviada a', email);
-    return { statusCode: 200, body: 'Invitación enviada.' };
+    // Además, dar de alta el contacto en la Audience de Resend: así la lista para el
+    // lanzamiento se construye sola. La API actual usa una sola audiencia por cuenta,
+    // por eso no lleva audienceId.
+    //
+    // Va en su PROPIO try/catch a propósito: si esto falla, no debe afectar el envío
+    // de la invitación, que es lo importante para el usuario.
+    try {
+      const contactRes = await fetch('https://api.resend.com/contacts', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, unsubscribed: false }),
+      });
+
+      if (contactRes.ok) {
+        console.log('submission-created: contacto agregado a la Audience —', email);
+      } else {
+        const contactErr = await contactRes.text();
+        console.warn('submission-created: no se pudo agregar a la Audience', contactRes.status, contactErr);
+      }
+    } catch (e) {
+      console.warn('submission-created: error al agregar a la Audience', e);
+    }
+
+    return { statusCode: 200, body: 'Listo.' };
   } catch (err) {
     console.error('submission-created: error inesperado', err);
     return { statusCode: 200, body: 'Error manejado.' };
