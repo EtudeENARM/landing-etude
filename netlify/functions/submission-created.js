@@ -13,11 +13,13 @@ const FROM = 'Etude ENARM <hola@etudeenarm.com>';
 const REPLY_TO = 'etude.enarm@gmail.com';
 const SUBJECT = 'Acceso anticipado a Etude ENARM';
 
+// v2 (23-jul-2026, aprobada por Mario): diseño con marca (tarjeta + logo) y
+// presentación del fundador en una línea, todo en primera persona.
 const textBody = `Hola:
 
-Recientemente dejaste tu correo en etudeenarm.com porque te interesó Etude ENARM, el simulador de casos clínicos para el ENARM.
+Soy Mario, médico y creador de Etude ENARM. Hace poco dejaste tu correo en etudeenarm.com porque te interesó el simulador de casos clínicos para el ENARM — un examen que yo también presenté, y por eso construí esta app.
 
-Estamos abriendo la beta de fundadores: acceso completo y gratuito a la app durante toda la prueba. Solo pedimos dos cosas a cambio: que la uses de verdad y que nos compartas tu feedback honesto para mejorarla.
+Estoy abriendo la beta de fundadores: acceso completo y gratuito a la app durante toda la prueba. Solo pido dos cosas a cambio: que la uses de verdad y que me compartas tu feedback honesto para mejorarla.
 
 Los lugares son limitados, así que si te interesa, entra aquí y te tomará un minuto:
 
@@ -25,23 +27,34 @@ ${FORM_URL}
 
 El formulario te va a preguntar si usas Android o iPhone y te dará las instrucciones exactas para cada uno. Nada complicado.
 
-Gracias por haber estado ahí desde antes de que existiera. Nos encantaría tenerte entre los primeros en probarla.
+Gracias por haber estado ahí desde antes de que existiera. Me encantaría tenerte entre los primeros en probarla.
 
 Un saludo,
-El equipo de Etude ENARM`;
+Mario — Etude ENARM`;
 
-const htmlBody = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;color:#0B0B0F;max-width:520px;margin:0 auto;">
-  <p>Hola:</p>
-  <p>Recientemente dejaste tu correo en <a href="https://etudeenarm.com" style="color:#0B0B0F;">etudeenarm.com</a> porque te interesó <strong>Etude ENARM</strong>, el simulador de casos clínicos para el ENARM.</p>
-  <p>Estamos abriendo la <strong>beta de fundadores</strong>: acceso completo y gratuito a la app durante toda la prueba. Solo pedimos dos cosas a cambio: que la uses de verdad y que nos compartas tu feedback honesto para mejorarla.</p>
-  <p>Los lugares son limitados, así que si te interesa, entra aquí y te tomará un minuto:</p>
-  <p style="margin:22px 0;">
-    <a href="${FORM_URL}" style="display:inline-block;background:#0B0B0F;color:#ffffff;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:600;">Completar el formulario</a>
-  </p>
-  <p style="font-size:13px;color:#8A8A8E;">O copia este enlace: <a href="${FORM_URL}" style="color:#8A8A8E;">${FORM_URL}</a></p>
-  <p>El formulario te va a preguntar si usas Android o iPhone y te dará las instrucciones exactas para cada uno. Nada complicado.</p>
-  <p>Gracias por haber estado ahí desde antes de que existiera. Nos encantaría tenerte entre los primeros en probarla.</p>
-  <p>Un saludo,<br>El equipo de Etude ENARM</p>
+const htmlBody = `<div style="background-color:#F4F4F7;padding:36px 16px;">
+  <div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;">
+    <div style="background-color:#FFFFFF;border:1px solid #E7E7EB;border-radius:16px;padding:38px 32px;">
+      <div style="text-align:center;">
+        <img src="https://etudeenarm.com/assets/logo-e-ink.png" alt="Etude ENARM" width="34" style="width:34px;height:auto;">
+      </div>
+      <p style="text-align:center;margin:24px 0 8px;font-size:11.5px;letter-spacing:2px;font-weight:600;color:#8A8A8E;">BETA DE FUNDADORES</p>
+      <h1 style="text-align:center;margin:0 0 24px;font-size:22px;line-height:1.3;color:#0B0B0F;font-weight:700;">Tu acceso anticipado a Etude&nbsp;ENARM</h1>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Hola:</p>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Soy Mario, médico y creador de <strong>Etude ENARM</strong>. Hace poco dejaste tu correo en <a href="https://etudeenarm.com" style="color:#0B0B0F;">etudeenarm.com</a> porque te interesó el simulador de casos clínicos para el ENARM — un examen que yo también presenté, y por eso construí esta app.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Estoy abriendo la <strong>beta de fundadores</strong>: acceso completo y gratuito a la app durante toda la prueba. Solo pido dos cosas a cambio: que la uses de verdad y que me compartas tu feedback honesto para mejorarla.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 6px;">Los lugares son limitados, así que si te interesa, entra aquí y te tomará un minuto:</p>
+      <div style="text-align:center;margin:26px 0 10px;">
+        <a href="${FORM_URL}" style="display:inline-block;background-color:#0B0B0F;color:#FFFFFF;text-decoration:none;padding:14px 30px;border-radius:999px;font-weight:600;font-size:15px;">Completar el formulario</a>
+      </div>
+      <p style="text-align:center;font-size:12.5px;color:#8A8A8E;margin:0 0 26px;">O copia este enlace:<br><a href="${FORM_URL}" style="color:#8A8A8E;">${FORM_URL}</a></p>
+      <div style="border-top:1px solid #E7E7EB;margin:0 0 22px;"></div>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 18px;">El formulario te va a preguntar si usas Android o iPhone y te dará las instrucciones exactas para cada uno. Nada complicado.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Gracias por haber estado ahí desde antes de que existiera. Me encantaría tenerte entre los primeros en probarla.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0;">Un saludo,<br>Mario — Etude ENARM</p>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#8A8A8E;margin:18px 0 0;line-height:1.6;">Recibiste este correo porque dejaste tu dirección en <a href="https://etudeenarm.com" style="color:#8A8A8E;">etudeenarm.com</a><br>Etude ENARM</p>
+  </div>
 </div>`;
 
 exports.handler = async (event) => {
