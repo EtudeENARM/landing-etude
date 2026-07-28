@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soporte — Etude ENARM</title>
+  <link rel="icon" type="image/png" href="assets/logo-e-ink.png" />
+  <meta name="description" content="Centro de soporte de Etude ENARM: contacto, cuenta, suscripción Etude Pro y preguntas frecuentes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --black: #0a0a0a; --white: #f7f5f0; --gray-2: #2a2a2a; --gray-3: #555; --gray-4: #888; --accent: #e8e0d0; --serif: 'Cormorant Garant', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif; }
+    body { background: var(--black); color: var(--white); font-family: var(--sans); font-weight: 300; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    nav { padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-2); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 26px; width: auto; }
+    .nav-logo-text { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--white); }
+    .back-link { font-size: 13px; color: var(--gray-4); text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: var(--white); }
+    main { max-width: 680px; margin: 0 auto; padding: 80px 24px 120px; }
+    .doc-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-3); margin-bottom: 20px; }
+    h1 { font-family: var(--serif); font-size: clamp(32px, 5vw, 52px); font-weight: 400; line-height: 1.15; margin-bottom: 12px; }
+    .doc-date { font-size: 13px; color: var(--gray-3); margin-bottom: 48px; }
+    h2 { font-family: var(--serif); font-size: 22px; font-weight: 500; margin-top: 48px; margin-bottom: 14px; color: var(--white); }
+    p, li { font-size: 15px; color: var(--gray-4); line-height: 1.8; margin-bottom: 14px; }
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    li { margin-bottom: 8px; }
+    strong { color: var(--white); font-weight: 500; }
+    a { color: var(--accent); }
+
+    /* Tarjeta de contacto — contenedor oscuro elevado */
+    .contact { background: #131313; border: 1px solid var(--gray-2); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+    .contact-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-3); margin-bottom: 14px; }
+    .contact-mail { font-size: clamp(19px, 3.6vw, 26px); font-weight: 500; line-height: 1.3; color: var(--white); margin-bottom: 10px; word-break: break-word; }
+    .contact-mail a { color: var(--white); text-decoration: none; border-bottom: 1px solid var(--gray-3); transition: border-color 0.2s; }
+    .contact-mail a:hover { border-bottom-color: var(--white); }
+    .contact-meta { font-size: 13px; color: var(--gray-3); margin-bottom: 0; }
+
+    /* Acordeón */
+    .faq-group { margin-top: 40px; }
+    .faq-group-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-3); margin-bottom: 4px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-2); }
+    details { border-bottom: 1px solid var(--gray-2); }
+    summary {
+      list-style: none; cursor: pointer; padding: 20px 36px 20px 0; position: relative;
+      font-size: 15px; font-weight: 400; color: var(--white); line-height: 1.5;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: ''; position: absolute; right: 6px; top: 50%;
+      width: 8px; height: 8px; margin-top: -6px;
+      border-right: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4);
+      transform: rotate(45deg); transition: transform 0.25s ease, border-color 0.2s;
+    }
+    summary:hover::after { border-color: var(--white); }
+    details[open] > summary::after { transform: rotate(-135deg); margin-top: -2px; border-color: var(--white); }
+    .answer { padding: 0 0 22px; }
+    .answer p:last-child, .answer ul:last-child, .answer ol:last-child { margin-bottom: 0; }
+    .answer ol li, .answer ul li { font-size: 15px; }
+
+    .note { border-left: 1px solid var(--gray-2); padding-left: 20px; margin: 32px 0 0; }
+    .note p:last-child { margin-bottom: 0; }
+
+    footer { border-top: 1px solid var(--gray-2); padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--gray-3); text-decoration: none; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { font-size: 13px; color: var(--gray-3); }
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      main { padding: 56px 20px 90px; }
+      .contact { padding: 24px 22px; }
+      footer { padding: 28px 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="assets/logo-e-white.png" alt="Etude" />
+    <span class="nav-logo-text">Etude ENARM</span>
+  </a>
+  <a href="index.html" class="back-link">← Volver al inicio</a>
+</nav>
+
+<main>
+  <p class="doc-label">Ayuda</p>
+  <h1>Soporte</h1>
+  <p class="doc-date">Última actualización: Julio 2026</p>
+
+  <div class="contact">
+    <p class="contact-label">Contacto</p>
+    <p class="contact-mail"><a href="mailto:etude.enarm@gmail.com?subject=Soporte%20Etude%20ENARM">etude.enarm@gmail.com</a></p>
+    <p class="contact-meta">Respondemos en un plazo máximo de 72 horas hábiles.</p>
+  </div>
+
+  <p>Escríbenos cuando lo necesites. Para resolver tu caso en el primer correo, incluye el <strong>correo con el que te registraste</strong>, tu <strong>dispositivo</strong> y qué estabas haciendo cuando ocurrió el problema.</p>
+
+  <div class="faq-group">
+    <p class="faq-group-title">Cuenta y progreso</p>
+
+    <details>
+      <summary>Cambié de teléfono, ¿pierdo mi historial y mis estadísticas?</summary>
+      <div class="answer">
+        <p>No. Tu progreso está ligado a tu cuenta, no al dispositivo. Instala Etude ENARM en el equipo nuevo e inicia sesión con <strong>el mismo correo</strong> que usabas antes: tu historial de respuestas, tus simulacros y tus estadísticas aparecerán tal como los dejaste.</p>
+        <p>Si iniciaste sesión con un correo distinto, verás una cuenta vacía. Sal de la sesión y entra con el correo original.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>No puedo iniciar sesión</summary>
+      <div class="answer">
+        <p>Verifica que estés usando el mismo correo con el que creaste tu cuenta. Si olvidaste tu contraseña, usa la opción de recuperación en la pantalla de inicio de sesión y revisa también tu carpeta de correo no deseado, donde pueden caer estos mensajes.</p>
+        <p>Si el correo de recuperación no llega en unos minutos, escríbenos y lo resolvemos manualmente.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <p class="faq-group-title">Suscripción Etude Pro</p>
+
+    <details>
+      <summary>Cambié de Android a iPhone (o al revés), ¿se pasa mi suscripción?</summary>
+      <div class="answer">
+        <p>Sí. Tu suscripción está ligada a <strong>tu cuenta de Etude ENARM</strong>, no al dispositivo. Instala la aplicación en el equipo nuevo, inicia sesión con el mismo correo y tu acceso Etude Pro aparecerá activo.</p>
+        <p>Ten en cuenta que el cobro sigue corriendo por la tienda donde contrataste originalmente. Si compraste en Google Play y ahora usas un iPhone, la renovación la sigue cobrando Google, y es ahí donde administras o cancelas la suscripción.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Cómo cancelar mi suscripción</summary>
+      <div class="answer">
+        <p>Las suscripciones se administran desde la tienda, no desde la aplicación:</p>
+        <ul>
+          <li><strong>iPhone o iPad:</strong> Ajustes → toca tu nombre → Suscripciones → Etude ENARM → Cancelar suscripción.</li>
+          <li><strong>Android:</strong> Google Play → tu foto de perfil → Pagos y suscripciones → Suscripciones → Etude ENARM → Cancelar suscripción.</li>
+        </ul>
+        <p>Al cancelar conservas el acceso hasta que termine el periodo que ya pagaste. <strong>Desinstalar la aplicación no cancela la suscripción.</strong></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <p class="faq-group-title">Contenido y estudio</p>
+
+    <details>
+      <summary>¿El contenido está actualizado para el ENARM 2026?</summary>
+      <div class="answer">
+        <p>Sí. El contenido de Etude ENARM se elabora a partir de las <strong>Guías de Práctica Clínica (GPC)</strong> vigentes y de los <strong>diez Protocolos Nacionales de Atención Médica (PRONAM)</strong> publicados por la Secretaría de Salud.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>¿Puedo estudiar sin conexión a internet?</summary>
+      <div class="answer">
+        <p>Todavía no. Por ahora Etude ENARM necesita conexión para funcionar.</p>
+        <p>El modo sin conexión es una de las funciones que más nos han pedido y está en desarrollo. Preferimos decírtelo con claridad: si sueles estudiar en lugares sin señal, como algunas sedes de servicio social o durante los traslados, tenlo en cuenta.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Encontré un error en una pregunta o en un caso clínico</summary>
+      <div class="answer">
+        <p>Queremos saberlo. El rigor del contenido es lo más importante de Etude ENARM y revisamos todos los reportes.</p>
+        <p>Envíanos una captura de la pregunta junto con el motivo por el que consideras que la respuesta o la explicación son incorrectas. Si tienes una referencia bibliográfica que lo respalde, inclúyela: nos ayuda a resolverlo mucho más rápido.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Quiero sugerir una función o un tema</summary>
+      <div class="answer">
+        <p>Escríbenos al mismo correo. Etude ENARM se construye a partir de lo que nos piden quienes están estudiando para el examen, y leemos todas las sugerencias.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-group">
+    <p class="faq-group-title">Problemas técnicos</p>
+
+    <details>
+      <summary>La aplicación se cierra o el contenido no carga</summary>
+      <div class="answer">
+        <p>Antes de escribirnos, intenta lo siguiente en orden:</p>
+        <ol>
+          <li>Confirma que tienes una conexión a internet estable.</li>
+          <li>Cierra la aplicación por completo y vuelve a abrirla.</li>
+          <li>Revisa que tengas instalada la última versión disponible en la tienda.</li>
+          <li>Reinicia el dispositivo.</li>
+        </ol>
+        <p>Si el problema persiste, escríbenos indicando en qué pantalla ocurre y qué estabas haciendo. Una captura o un video corto nos ahorra mucho tiempo de diagnóstico.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Cómo eliminar mi cuenta</summary>
+      <div class="answer">
+        <p>Puedes eliminar tu cuenta y todos tus datos desde la pestaña <strong>Perfil</strong> dentro de la aplicación, o solicitarlo por correo si ya la desinstalaste. Los pasos completos, junto con el detalle de qué datos se borran y cuáles se conservan, están en la página de <a href="eliminar-cuenta.html">eliminación de cuenta</a>.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="note">
+    <p>Etude ENARM es una <strong>aplicación educativa</strong> para la preparación del Examen Nacional para Aspirantes a Residencias Médicas. Su contenido tiene fines exclusivamente de estudio y no constituye asesoría clínica, diagnóstica ni de tratamiento.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Inicio</a>
+    <a href="privacidad.html">Privacidad</a>
+    <a href="terminos.html">Términos</a>
+    <a href="eliminar-cuenta.html">Eliminar cuenta</a>
+  </div>
+  <p class="footer-copy">Etude ENARM · <a href="mailto:etude.enarm@gmail.com">etude.enarm@gmail.com</a></p>
+</footer>
+</body>
+</html>
