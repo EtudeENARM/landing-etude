@@ -9,18 +9,29 @@
 // (RESEND_API_KEY, marcada como secreta) — nunca en este código.
 
 const INSTAGRAM_URL = 'https://instagram.com/etude.enarm';
+const APPSTORE_URL = 'https://apps.apple.com/mx/app/etude-enarm/id6759030566';
 const FROM = 'Etude ENARM <hola@etudeenarm.com>';
 const REPLY_TO = 'etude.enarm@gmail.com';
-const SUBJECT = 'Estás en la lista — Etude ENARM';
+const SUBJECT = 'Ya estás en la lista — y si tienes iPhone, ya puedes bajarla';
 
-// v3 (8-ago-2026): la beta de fundadores cerró sus admisiones, así que este correo
-// deja de ser una invitación al formulario y pasa a ser la confirmación de la lista
-// de espera. Se quitó FORM_URL (el Google Form ya no acepta respuestas) y el botón
-// ahora lleva a Instagram, que es el canal donde sí hay algo que ver mientras tanto.
+// v4 (12-ago-2026): iOS lleva publicada desde el 3-ago y Android sigue esperando el
+// acceso a producción de Google. O sea que "sale muy pronto" ya solo es cierto para
+// la mitad de los que se registran.
+//
+// SOLUCIÓN: dos ramas dentro de UN SOLO correo. No se detecta el dispositivo y no se
+// parte la lista — el lector se acomoda solo leyendo el rótulo de su plataforma. Media
+// docena de líneas de más le ahorran a Mario mantener dos plantillas y una segmentación
+// que hoy no existe (la Audience de Resend no guarda plataforma).
+//
+// Cuando Android salga, este correo vuelve a tener una sola rama: se borra el bloque de
+// Android, el de iPhone se queda con los dos enlaces de tienda y el asunto se simplifica.
+//
+// v3 (8-ago-2026): la beta de fundadores cerró sus admisiones, así que este correo dejó
+// de ser una invitación al formulario y pasó a ser la confirmación de la lista de espera.
+// Se quitó FORM_URL (el Google Form ya no acepta respuestas).
 // VOZ: de marca, no personal. Por la Regla de voz de `Etude Mail/01-contexto/marca-y-voz.md`,
 // un correo automático a una lista firma como "El equipo de Etude ENARM"; la firma
-// "Mario — Etude ENARM" queda para correos individuales. Por eso se quitó también la
-// presentación del fundador que traía la v2.
+// "Mario — Etude ENARM" queda para correos individuales.
 // La v2 (23-jul, invitación a la beta, en primera persona) vive en el historial de git.
 const textBody = `Hola:
 
@@ -28,7 +39,13 @@ Acabas de dejar tu correo en etudeenarm.com, así que ya estás en la lista.
 
 Etude ENARM es un simulador de casos clínicos hecho para que entiendas cómo llegar a la respuesta, no solo cuál es.
 
-Sale muy pronto. El día que esté disponible te escribimos a este mismo correo con el enlace para descargarla; no tienes que hacer nada más.
+De aquí depende de tu teléfono:
+
+SI TIENES IPHONE — ya está disponible. La puedes descargar ahora mismo:
+
+${APPSTORE_URL}
+
+SI TIENES ANDROID — sale muy pronto. El día que esté disponible te escribimos a este mismo correo con el enlace; no tienes que hacer nada más.
 
 Mientras tanto, publicamos casos y explicaciones en Instagram:
 
@@ -36,26 +53,39 @@ ${INSTAGRAM_URL}
 
 El equipo de Etude ENARM`;
 
-const htmlBody = `<div style="background-color:#F4F4F7;padding:36px 16px;">
+// Colores tomados de `Etude Sistema/IDENTIDAD.md` (fuente única, 2-ago-2026): fondo
+// #F6F7F8, tarjeta #FFFFFF, tinta #0E1011, rótulo #6F7071, hairline #E3E3E3. Monocromo
+// a propósito — la ley 1 del color dice que el chrome no lleva acento; el acento entra
+// solo por el contenido didáctico, que aquí no hay.
+const htmlBody = `<div style="background-color:#F6F7F8;padding:36px 16px;">
   <div style="max-width:520px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;">
-    <div style="background-color:#FFFFFF;border:1px solid #E7E7EB;border-radius:16px;padding:38px 32px;">
+    <div style="background-color:#FFFFFF;border:1px solid #E3E3E3;border-radius:16px;padding:38px 32px;">
       <div style="text-align:center;">
         <img src="https://etudeenarm.com/assets/logo-e-ink.png" alt="Etude ENARM" width="34" style="width:34px;height:auto;">
       </div>
-      <p style="text-align:center;margin:24px 0 8px;font-size:11.5px;letter-spacing:2px;font-weight:600;color:#8A8A8E;">LISTA DE ESPERA</p>
-      <h1 style="text-align:center;margin:0 0 24px;font-size:22px;line-height:1.3;color:#0B0B0F;font-weight:700;">Ya estás en la lista</h1>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Hola:</p>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;">Acabas de dejar tu correo en <a href="https://etudeenarm.com" style="color:#0B0B0F;">etudeenarm.com</a>, así que ya estás en la lista.</p>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;"><strong>Etude ENARM</strong> es un simulador de casos clínicos hecho para que entiendas cómo llegar a la respuesta, no solo cuál es.</p>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 14px;"><strong>Sale muy pronto.</strong> El día que esté disponible te escribimos a este mismo correo con el enlace para descargarla; no tienes que hacer nada más.</p>
-      <div style="border-top:1px solid #E7E7EB;margin:26px 0 22px;"></div>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0 0 6px;">Mientras tanto, publicamos casos y explicaciones en Instagram:</p>
-      <div style="text-align:center;margin:26px 0 26px;">
-        <a href="${INSTAGRAM_URL}" style="display:inline-block;background-color:#0B0B0F;color:#FFFFFF;text-decoration:none;padding:14px 30px;border-radius:999px;font-weight:600;font-size:15px;">Ver @etude.enarm</a>
+      <p style="text-align:center;margin:24px 0 8px;font-size:11.5px;letter-spacing:2px;font-weight:600;color:#6F7071;">TU REGISTRO</p>
+      <h1 style="text-align:center;margin:0 0 24px;font-size:22px;line-height:1.3;color:#0E1011;font-weight:700;">Ya estás en la lista</h1>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 14px;">Hola:</p>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 14px;">Acabas de dejar tu correo en <a href="https://etudeenarm.com" style="color:#0E1011;">etudeenarm.com</a>, así que ya estás en la lista.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 14px;"><strong>Etude ENARM</strong> es un simulador de casos clínicos hecho para que entiendas cómo llegar a la respuesta, no solo cuál es.</p>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 20px;">De aquí depende de tu teléfono:</p>
+
+      <div style="background-color:#F6F7F8;border-radius:12px;padding:20px 22px;margin:0 0 12px;">
+        <p style="margin:0 0 6px;font-size:11.5px;letter-spacing:1.6px;font-weight:600;color:#6F7071;">IPHONE</p>
+        <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 16px;"><strong>Ya está disponible.</strong> La puedes descargar ahora mismo.</p>
+        <a href="${APPSTORE_URL}" style="display:inline-block;background-color:#0E1011;color:#FFFFFF;text-decoration:none;padding:13px 26px;border-radius:999px;font-weight:600;font-size:15px;">Descargar en la App&nbsp;Store</a>
       </div>
-      <p style="font-size:15px;line-height:1.6;color:#0B0B0F;margin:0;">El equipo de Etude&nbsp;ENARM</p>
+
+      <div style="background-color:#F6F7F8;border-radius:12px;padding:20px 22px;margin:0 0 24px;">
+        <p style="margin:0 0 6px;font-size:11.5px;letter-spacing:1.6px;font-weight:600;color:#6F7071;">ANDROID</p>
+        <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0;"><strong>Sale muy pronto.</strong> El día que esté disponible te escribimos a este mismo correo con el enlace; no tienes que hacer nada más.</p>
+      </div>
+
+      <div style="border-top:1px solid #E3E3E3;margin:26px 0 22px;"></div>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0 0 22px;">Mientras tanto, publicamos casos y explicaciones en Instagram: <a href="${INSTAGRAM_URL}" style="color:#0E1011;font-weight:600;">@etude.enarm</a></p>
+      <p style="font-size:15px;line-height:1.6;color:#0E1011;margin:0;">El equipo de Etude&nbsp;ENARM</p>
     </div>
-    <p style="text-align:center;font-size:12px;color:#8A8A8E;margin:18px 0 0;line-height:1.6;">Recibiste este correo porque dejaste tu dirección en <a href="https://etudeenarm.com" style="color:#8A8A8E;">etudeenarm.com</a><br>Etude ENARM</p>
+    <p style="text-align:center;font-size:12px;color:#6F7071;margin:18px 0 0;line-height:1.6;">Recibiste este correo porque dejaste tu dirección en <a href="https://etudeenarm.com" style="color:#6F7071;">etudeenarm.com</a><br>Etude ENARM</p>
   </div>
 </div>`;
 
