@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Descargar Etude ENARM</title>
+<meta name="description" content="Descarga Etude ENARM en App Store o Google Play.">
+<meta property="og:title" content="Descargar Etude ENARM">
+<meta property="og:description" content="El simulador de casos clínicos para el ENARM. Disponible en iPhone y Android.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/logo-e-ink.png">
+<style>
+  :root{
+    --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:radial-gradient(120% 85% at 50% 0%, rgba(255,255,255,.06) 0%, transparent 55%), #08080B;
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 24px;
+  }
+  .wrap{text-align:center;max-width:400px;width:100%;}
+  .marca{display:inline-flex;align-items:center;gap:11px;margin-bottom:36px;}
+  .marca img{height:30px;width:auto;display:block;}
+  .marca span{color:#fff;font-size:18px;font-weight:600;letter-spacing:.2px;}
+  h1{color:#fff;font-size:27px;line-height:1.16;font-weight:700;letter-spacing:-.9px;margin-bottom:14px;}
+  .sub{color:rgba(255,255,255,.55);font-size:15.5px;line-height:1.6;margin-bottom:34px;}
+  .botones{display:flex;flex-direction:column;gap:11px;}
+  .btn{
+    background:#fff;color:#0B0B0F;font-size:15px;font-weight:600;
+    padding:16px 26px;border-radius:999px;text-decoration:none;
+    display:block;transition:opacity .15s ease-out,transform .15s ease-out;
+  }
+  .btn:active{transform:scale(.97);}
+  .pie{color:rgba(255,255,255,.38);font-size:13px;line-height:1.6;margin-top:28px;}
+  .pie a{color:rgba(255,255,255,.55);text-decoration:none;}
+  @media(hover:hover) and (pointer:fine){
+    .btn:hover{opacity:.85;}
+    .pie a:hover{color:#fff;}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="marca">
+    <img src="assets/logo-e-white.png" alt="">
+    <span>Etude <b style="font-weight:700;letter-spacing:-.1px;">ENARM</b></span>
+  </div>
+
+  <h1 data-titulo>Descarga Etude ENARM</h1>
+  <p class="sub" data-sub>Elige tu tienda para instalar la app.</p>
+
+  <div class="botones">
+    <a class="btn" href="https://apps.apple.com/mx/app/etude-enarm/id6759030566">Descargar para iPhone</a>
+    <a class="btn" href="https://play.google.com/store/apps/details?id=com.etudeenarm.app">Descargar para Android</a>
+  </div>
+
+  <p class="pie">Más de 1,000 preguntas · Gratis las primeras 20<br><a href="/">Conoce Etude ENARM</a></p>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var IOS = 'https://apps.apple.com/mx/app/etude-enarm/id6759030566';
+  var ANDROID = 'https://play.google.com/store/apps/details?id=com.etudeenarm.app';
+
+  var ua = navigator.userAgent || '';
+  var esAndroid = /android/i.test(ua);
+  // iPadOS se anuncia como Macintosh; maxTouchPoints lo delata.
+  var esIOS = /iphone|ipad|ipod/i.test(ua) ||
+              (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+
+  var destino = esAndroid ? ANDROID : (esIOS ? IOS : null);
+
+  // ?ver deja ver la página sin que redirija (para revisarla desde el celular).
+  var soloVer = location.search.indexOf('ver') !== -1;
+
+  // Si ya redirigimos en esta pestaña, no lo repetimos: quien vuelve aquí
+  // es porque quiere elegir a mano.
+  var yaFue = false;
+  try { yaFue = sessionStorage.getItem('etude-descarga') === '1'; } catch(e){}
+
+  if (destino && !soloVer && !yaFue) {
+    try { sessionStorage.setItem('etude-descarga', '1'); } catch(e){}
+
+    document.querySelector('[data-titulo]').textContent = 'Abriendo la tienda…';
+    document.querySelector('[data-sub]').textContent =
+      esAndroid ? 'Si no abre sola, toca “Descargar para Android”.'
+                : 'Si no abre sola, toca “Descargar para iPhone”.';
+
+    // replace() y no href: así el botón “atrás” no cae de nuevo en esta página.
+    location.replace(destino);
+  }
+})();
+</script>
+
+</body>
+</html>

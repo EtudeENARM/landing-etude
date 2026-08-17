@@ -7,3 +7,10 @@
 
   # Aquí vivirá el autoresponder cuando lo construyamos (aún no existe, no pasa nada).
   functions = "netlify/functions"
+
+# La URL corta que va en las historias de Instagram y en la bio.
+# Sirve descargar.html sin el ".html" (status 200 = reescritura, no redirección).
+[[redirects]]
+  from = "/descargar"
+  to = "/descargar.html"
+  status = 200
