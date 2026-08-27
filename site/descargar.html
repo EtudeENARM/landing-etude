@@ -116,15 +116,25 @@
   var esIOS = /iphone|ipad|ipod/i.test(ua) ||
               (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
 
+  // ?t=ios | ?t=android fuerza la tienda: lo usan los botones de la landing,
+  // donde la persona ya eligió plataforma y no se le debe corregir el destino.
+  var forzada = params.get('t');
+  if (forzada === 'ios' || forzada === 'android') {
+    esAndroid = forzada === 'android';
+    esIOS = !esAndroid;
+  }
+
   var destino = esAndroid ? ANDROID : (esIOS ? IOS : null);
 
   // ?ver deja ver la página sin que redirija (para revisarla desde el celular).
   var soloVer = params.has('ver');
 
   // Si ya redirigimos en esta pestaña, no lo repetimos: quien vuelve aquí
-  // es porque quiere elegir a mano.
+  // es porque quiere elegir a mano. Una tienda forzada sí se respeta siempre:
+  // viene de un clic deliberado, no de una redirección que se repite sola.
   var yaFue = false;
   try { yaFue = sessionStorage.getItem('etude-descarga') === '1'; } catch(e){}
+  if (forzada) yaFue = false;
 
   if (destino && !soloVer && !yaFue) {
     try { sessionStorage.setItem('etude-descarga', '1'); } catch(e){}
