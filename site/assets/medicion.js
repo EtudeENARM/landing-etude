@@ -4,7 +4,7 @@ window.ETUDE_MEDICION = {
   // Pixel de Meta (Events Manager → Orígenes de datos → el ID del conjunto de datos)
   PIXEL_ID: '2313220582783340',
   // Provider token de App Store Connect (el "pt" que trae su generador de campaign links)
-  APPLE_PT: ''
+  APPLE_PT: '128528400'
 };
 
 (function () {

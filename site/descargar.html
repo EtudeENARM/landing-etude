@@ -87,7 +87,10 @@
 
   if (campana) {
     if (APPLE_PT) {
-      IOS += '?pt=' + APPLE_PT + '&ct=' + encodeURIComponent(campana) + '&mt=8';
+      // Formato exacto del generador de App Store Connect: la atribución de
+      // campaña vive en la ruta /app/apple-store/id…, no en la ficha bonita.
+      IOS = 'https://apps.apple.com/app/apple-store/id6759030566' +
+            '?pt=' + APPLE_PT + '&ct=' + encodeURIComponent(campana) + '&mt=8';
     }
     ANDROID += '&referrer=' + encodeURIComponent(
       'utm_source=' + fuente + '&utm_medium=link&utm_campaign=' + campana
