@@ -438,5 +438,21 @@
 
 })();
 </script>
+<script src="assets/medicion.js"></script>
+<script>
+// Medición: registra cuando alguien toca un botón de tienda (solo si hay Pixel configurado).
+(function(){
+  if (typeof window.fbq !== 'function') return;
+  document.querySelectorAll('a[data-cta]').forEach(function(a){
+    var href = a.getAttribute('href') || '';
+    var plataforma = href.indexOf('apps.apple') !== -1 ? 'ios'
+                   : href.indexOf('play.google') !== -1 ? 'android' : null;
+    if (!plataforma) return;
+    a.addEventListener('click', function(){
+      try { fbq('trackCustom', 'ClickTienda', { plataforma: plataforma, campana: 'landing' }); } catch(e){}
+    });
+  });
+})();
+</script>
 </body>
 </html>

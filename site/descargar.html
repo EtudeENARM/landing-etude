@@ -60,20 +60,56 @@
   <p class="sub" data-sub>Elige tu tienda para instalar la app.</p>
 
   <div class="botones">
-    <a class="btn" href="https://apps.apple.com/mx/app/etude-enarm/id6759030566">Descargar para iPhone</a>
-    <a class="btn" href="https://play.google.com/store/apps/details?id=com.etudeenarm.app">Descargar para Android</a>
+    <a class="btn" data-tienda="ios" href="https://apps.apple.com/mx/app/etude-enarm/id6759030566">Descargar para iPhone</a>
+    <a class="btn" data-tienda="android" href="https://play.google.com/store/apps/details?id=com.etudeenarm.app">Descargar para Android</a>
   </div>
 
   <p class="pie">Más de 1,000 preguntas · Gratis las primeras 20<br><a href="/">Conoce Etude ENARM</a></p>
 </div>
 
+<script src="assets/medicion.js"></script>
 <script>
 (function(){
   'use strict';
 
+  var APPLE_PT = (window.ETUDE_MEDICION && window.ETUDE_MEDICION.APPLE_PT) || '';
+
   var IOS = 'https://apps.apple.com/mx/app/etude-enarm/id6759030566';
   var ANDROID = 'https://play.google.com/store/apps/details?id=com.etudeenarm.app';
 
+  // ── Etiquetas de campaña: /descargar?c=nombre&f=fuente ──
+  // "c" es la campaña (ej. meta-retargeting); "f" la fuente (default: etude).
+  // Con "c" presente, el enlace de cada tienda sale etiquetado y la descarga
+  // queda clasificada en App Store Connect (Campañas) y Play Console (UTM).
+  var params = new URLSearchParams(location.search);
+  var campana = (params.get('c') || '').replace(/[^\w-]/g, '').slice(0, 60);
+  var fuente = (params.get('f') || 'etude').replace(/[^\w-]/g, '').slice(0, 40);
+
+  if (campana) {
+    if (APPLE_PT) {
+      IOS += '?pt=' + APPLE_PT + '&ct=' + encodeURIComponent(campana) + '&mt=8';
+    }
+    ANDROID += '&referrer=' + encodeURIComponent(
+      'utm_source=' + fuente + '&utm_medium=link&utm_campaign=' + campana
+    );
+  }
+  document.querySelector('[data-tienda="ios"]').href = IOS;
+  document.querySelector('[data-tienda="android"]').href = ANDROID;
+
+  // El Pixel (si hay ID) ya quedó iniciado por assets/medicion.js.
+  var hayPixel = typeof window.fbq === 'function';
+
+  function marcaTienda(plataforma) {
+    if (!hayPixel) return;
+    try {
+      fbq('trackCustom', 'ClickTienda', { plataforma: plataforma, campana: campana || 'organico' });
+    } catch(e){}
+  }
+
+  document.querySelector('[data-tienda="ios"]').addEventListener('click', function(){ marcaTienda('ios'); });
+  document.querySelector('[data-tienda="android"]').addEventListener('click', function(){ marcaTienda('android'); });
+
+  // ── Redirección automática a la tienda del dispositivo. ──
   var ua = navigator.userAgent || '';
   var esAndroid = /android/i.test(ua);
   // iPadOS se anuncia como Macintosh; maxTouchPoints lo delata.
@@ -83,7 +119,7 @@
   var destino = esAndroid ? ANDROID : (esIOS ? IOS : null);
 
   // ?ver deja ver la página sin que redirija (para revisarla desde el celular).
-  var soloVer = location.search.indexOf('ver') !== -1;
+  var soloVer = params.has('ver');
 
   // Si ya redirigimos en esta pestaña, no lo repetimos: quien vuelve aquí
   // es porque quiere elegir a mano.
@@ -98,8 +134,15 @@
       esAndroid ? 'Si no abre sola, toca “Descargar para Android”.'
                 : 'Si no abre sola, toca “Descargar para iPhone”.';
 
+    marcaTienda(esAndroid ? 'android' : 'ios');
+
     // replace() y no href: así el botón “atrás” no cae de nuevo en esta página.
-    location.replace(destino);
+    // Con Pixel activo se espera un instante para que el evento alcance a salir.
+    if (hayPixel) {
+      setTimeout(function(){ location.replace(destino); }, 250);
+    } else {
+      location.replace(destino);
+    }
   }
 })();
 </script>
