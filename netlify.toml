@@ -14,3 +14,11 @@
   from = "/descargar"
   to = "/descargar.html"
   status = 200
+
+# El enlace de la bio de Instagram: corto y sin parámetros a la vista.
+# Tiene que ser 302 y no 200: la etiqueta viaja en la URL, y una reescritura
+# dejaría "/app" en la barra, sin nada que leer para clasificar la descarga.
+[[redirects]]
+  from = "/app"
+  to = "/descargar?c=bio-instagram"
+  status = 302
