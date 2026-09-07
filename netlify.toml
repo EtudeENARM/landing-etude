@@ -22,3 +22,10 @@
   from = "/app"
   to = "/descargar?c=bio-instagram"
   status = 302
+
+# El enlace de las historias de Instagram (la fija y las del día a día).
+# Misma mecánica que /app: 302 para que la etiqueta llegue a /descargar.
+[[redirects]]
+  from = "/historias"
+  to = "/descargar?c=historias"
+  status = 302
