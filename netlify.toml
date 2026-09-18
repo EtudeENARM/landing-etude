@@ -29,3 +29,12 @@
   from = "/historias"
   to = "/descargar?c=historias"
   status = 302
+
+# La página de la cuenta: la abren los correos de «Confirma tu correo» y
+# «Restablece tu contraseña» que manda la app (función enviarCorreoCuenta, en
+# Etude CC-FF/herramientas/correos-cuenta/). 200 = reescritura: la barra
+# conserva /cuenta y el código del enlace (?mode=…&oobCode=…) llega intacto.
+[[redirects]]
+  from = "/cuenta"
+  to = "/cuenta.html"
+  status = 200

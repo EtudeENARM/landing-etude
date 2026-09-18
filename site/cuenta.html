@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- El enlace lleva un código secreto en la URL: que no viaje a nadie más
+       (ni a Google Fonts) en la cabecera Referer, y que ningún buscador la guarde. -->
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>Tu cuenta · Etude ENARM</title>
+  <link rel="icon" type="image/png" href="/assets/logo-e-ink.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap" rel="stylesheet">
+  <!--
+    La página que abren los dos correos de la cuenta que manda la app con
+    Resend: «Confirma tu correo» (mode=verifyEmail) y «Restablece tu
+    contraseña» (mode=resetPassword). Sustituye a la página genérica de
+    Firebase (residencia-2f69a.firebaseapp.com/__/auth/action).
+
+    Habla directo con la API REST de Firebase Auth, sin su SDK: son tres
+    llamadas y no hace falta cargar nada. La llave es la pública del cliente,
+    la misma que lleva la app dentro.
+
+    Aspecto: el de los correos (maqueta aprobada por Mario el 18-sep-2026 en
+    Etude CC-FF/maquetas/maqueta_pagina_cuenta.html). Tokens de
+    Etude Sistema/IDENTIDAD.md §4, columna app, igual que la app.
+
+    Quién la llama: la función `enviarCorreoCuenta` (Etude CC-FF,
+    herramientas/correos-cuenta/). Si esta página cambia de dirección, la
+    función cambia con ella.
+  -->
+  <style>
+    :root {
+      --fondo: #F6F7F8; --tarjeta: #FFFFFF; --tinta: #0E1011; --sec: #6F7071;
+      --hair: #E3E3E3; --chip: #E6E6E6; --campo: #FFFFFF; --borde-campo: #B9B9B9;
+      --error: #C0382E; --boton: #0E1011; --boton-texto: #FFFFFF;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fondo: #000000; --tarjeta: #111111; --tinta: #F4F5F7; --sec: #8F8F8F;
+        --hair: #262626; --chip: #232323; --campo: #111111; --borde-campo: #3B3B3B;
+        --error: #FF6B5E; --boton: #F4F5F7; --boton-texto: #0E1011;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--fondo); color: var(--tinta);
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 480px; margin: 0 auto; padding: 40px 16px 64px; }
+    .marca { display: flex; align-items: center; gap: 10px; margin: 0 4px 20px; font-size: 16px; letter-spacing: 0.01em; }
+    .marca b { font-weight: 700; }
+    .barras { display: flex; flex-direction: column; gap: 5px; }
+    .barras i { display: block; height: 6px; border-radius: 3px; background: var(--tinta); width: 30px; }
+    .barras i:nth-child(2) { width: 19px; }
+    .tarjeta { background: var(--tarjeta); border: 1px solid var(--hair); border-radius: 12px; padding: 32px 24px; }
+    .cargando { display: flex; align-items: center; gap: 14px; }
+    .pastilla { width: 56px; height: 56px; border-radius: 16px; background: var(--chip);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .pastilla svg { width: 26px; height: 26px; stroke: var(--tinta); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    h1 { font-size: 24px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 12px; }
+    p { font-size: 16px; line-height: 1.55; margin: 0 0 12px; }
+    p.sec { color: var(--sec); font-size: 14px; }
+    p:last-child { margin-bottom: 0; }
+    .correo { font-weight: 600; overflow-wrap: anywhere; }
+    .campo { position: relative; margin: 20px 0 8px; }
+    .campo input { width: 100%; height: 48px; border-radius: 12px; border: 1px solid var(--borde-campo);
+      background: var(--campo); color: var(--tinta); font: inherit; font-size: 16px; padding: 0 48px 0 14px; outline: none; }
+    .campo input:focus { border-color: var(--tinta); }
+    .campo input.mal { border-color: var(--error); }
+    .campo input::placeholder { color: var(--sec); }
+    .ojo { position: absolute; right: 4px; top: 4px; width: 40px; height: 40px; border: 0; background: transparent;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 10px; }
+    .ojo svg { width: 20px; height: 20px; stroke: var(--sec); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .aviso { color: var(--error); font-size: 13px; min-height: 20px; margin: 0 0 12px; }
+    .boton { width: 100%; height: 48px; border: 0; border-radius: 12px; background: var(--boton); color: var(--boton-texto);
+      font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .boton[disabled] { opacity: .55; cursor: default; }
+    .girando { width: 22px; height: 22px; flex: none; border-radius: 50%; border: 2.5px solid var(--hair);
+      border-top-color: var(--tinta); animation: girar .8s linear infinite; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .girando { animation-duration: 2.4s; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="marca" aria-label="Etude ENARM"><div class="barras" aria-hidden="true"><i></i><i></i><i></i></div><span>Etude <b>ENARM</b></span></div>
+    <div id="contenido" aria-live="polite">
+      <div class="tarjeta cargando"><div class="girando"></div><p style="margin:0">Un momento…</p></div>
+    </div>
+  </main>
+  <noscript><main><div class="tarjeta"><p>Para usar esta página hace falta activar JavaScript en el navegador.</p></div></main></noscript>
+
+<script>
+(() => {
+  const LLAVE = 'AIzaSyCdn6V-k5VDi68xA2E6wj1AF_s2lkaWjXQ'; // pública: la misma que lleva la app
+  const API = 'https://identitytoolkit.googleapis.com/v1/accounts';
+
+  const ICONOS = {
+    hecho: '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+    enlace: '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/><path d="m4 4 16 16"/></svg>',
+    llave: '<svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.2-8.2M16 7l2 2M14 9l2 2"/></svg>',
+    aviso: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg>',
+    ojo: '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    ojoNo: '<svg viewBox="0 0 24 24"><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="m3 3 18 18"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'
+  };
+
+  const caja = document.getElementById('contenido');
+  const escapar = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const tarjeta = (icono, titulo, cuerpo) =>
+    `<div class="tarjeta"><div class="pastilla" aria-hidden="true">${ICONOS[icono]}</div><h1>${titulo}</h1>${cuerpo}</div>`;
+  const cargando = (texto) =>
+    `<div class="tarjeta cargando"><div class="girando" aria-hidden="true"></div><p style="margin:0">${texto}</p></div>`;
+  const pintar = (html) => { caja.innerHTML = html; };
+
+  // Firebase responde {error:{message:'INVALID_OOB_CODE'}}; una caída de red
+  // lanza TypeError. Las dos cosas se convierten en un código simple.
+  async function llamar(metodo, cuerpo) {
+    let r;
+    try {
+      r = await fetch(`${API}:${metodo}?key=${LLAVE}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo)
+      });
+    } catch (_) { return { fallo: 'red' }; }
+    const datos = await r.json().catch(() => ({}));
+    if (r.ok) return { datos };
+    const mensaje = (datos.error && datos.error.message) || 'desconocido';
+    return { fallo: mensaje.split(' ')[0].split(':')[0] };
+  }
+  // Usado o vencido: Firebase no distingue entre los dos.
+  const esVencido = (f) => ['INVALID_OOB_CODE', 'EXPIRED_OOB_CODE', 'USER_DISABLED', 'EMAIL_NOT_FOUND', 'USER_NOT_FOUND'].includes(f);
+
+  const params = new URLSearchParams(location.search);
+  const modo = params.get('mode');
+  const codigo = params.get('oobCode');
+
+  // ——— Confirmar el correo ———
+  // Se gasta al abrir, como la página de Firebase: si un antivirus de correo
+  // abre el enlace antes que la persona, el correo queda confirmado igual.
+  async function confirmar() {
+    pintar(cargando('Confirmando tu correo…'));
+    const { fallo } = await llamar('update', { oobCode: codigo });
+    if (!fallo) {
+      pintar(tarjeta('hecho', 'Correo confirmado', '<p>Vuelve a la app y pulsa «Ya lo confirmé» para entrar.</p>'));
+    } else if (esVencido(fallo)) {
+      pintar(tarjeta('enlace', 'Este enlace ya no sirve',
+        '<p>Puede que ya lo hayas usado. Vuelve a la app y pulsa «Ya lo confirmé».</p>' +
+        '<p class="sec">Si sigue sin confirmarse, pide otro correo con «Reenviar correo».</p>'));
+    } else {
+      pintar(tarjeta('aviso', 'No pudimos confirmar tu correo',
+        '<p>Revisa tu conexión e intenta de nuevo.</p><button class="boton" type="button" style="margin-top:12px">Intentar de nuevo</button>'));
+      caja.querySelector('.boton').onclick = confirmar;
+    }
+  }
+
+  // ——— Restablecer la contraseña ———
+  // Abrir NO gasta el enlace: `resetPassword` sin contraseña solo lo
+  // comprueba. Se gasta al guardar, así un antivirus que lo abra antes no se
+  // lo roba a la persona.
+  const vencidoRestablecer = () => tarjeta('enlace', 'Este enlace ya no sirve',
+    '<p>Los enlaces para restablecer la contraseña vencen pronto y solo sirven una vez.</p>' +
+    '<p class="sec">Pide otro desde la app, en «¿Olvidaste tu contraseña?».</p>');
+
+  async function restablecer() {
+    pintar(cargando('Un momento…'));
+    const { datos, fallo } = await llamar('resetPassword', { oobCode: codigo });
+    if (fallo) {
+      if (esVencido(fallo)) return pintar(vencidoRestablecer());
+      pintar(tarjeta('aviso', 'No pudimos abrir el enlace',
+        '<p>Revisa tu conexión e intenta de nuevo.</p><button class="boton" type="button" style="margin-top:12px">Intentar de nuevo</button>'));
+      caja.querySelector('.boton').onclick = restablecer;
+      return;
+    }
+    pintar(tarjeta('llave', 'Elige una contraseña nueva',
+      `<p>Para <span class="correo">${escapar(datos.email || '').replace('@', '<wbr>@')}</span></p>
+       <form novalidate>
+         <input type="email" name="username" autocomplete="username" value="${escapar(datos.email || '')}" hidden>
+         <div class="campo"><input type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password" aria-label="Contraseña nueva" autofocus>
+           <button type="button" class="ojo" aria-label="Mostrar contraseña">${ICONOS.ojo}</button></div>
+         <p class="aviso" role="alert"></p>
+         <button class="boton" type="submit">Guardar contraseña</button>
+       </form>`));
+
+    const form = caja.querySelector('form');
+    const campo = form.querySelector('input[type="password"]');
+    const ojo = form.querySelector('.ojo');
+    const aviso = form.querySelector('.aviso');
+    const boton = form.querySelector('.boton');
+    const avisar = (texto) => { aviso.textContent = texto; campo.classList.toggle('mal', !!texto); };
+
+    ojo.onclick = () => {
+      const ver = campo.type === 'password';
+      campo.type = ver ? 'text' : 'password';
+      ojo.innerHTML = ver ? ICONOS.ojoNo : ICONOS.ojo;
+      ojo.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    };
+    campo.oninput = () => { if (aviso.textContent && campo.value.length >= 6) avisar(''); };
+
+    form.onsubmit = async (ev) => {
+      ev.preventDefault();
+      // La misma regla y el mismo aviso que la app al crear cuenta.
+      if (campo.value.length < 6) { avisar('Usa al menos 6 caracteres.'); campo.focus(); return; }
+      boton.disabled = true; boton.textContent = 'Guardando…'; avisar('');
+      const r = await llamar('resetPassword', { oobCode: codigo, newPassword: campo.value });
+      if (!r.fallo) {
+        return pintar(tarjeta('hecho', 'Contraseña cambiada', '<p>Ya puedes entrar en la app con tu contraseña nueva.</p>'));
+      }
+      if (esVencido(r.fallo)) return pintar(vencidoRestablecer());
+      boton.disabled = false; boton.textContent = 'Guardar contraseña';
+      avisar(r.fallo === 'WEAK_PASSWORD' ? 'Usa al menos 6 caracteres.' : 'No se pudo guardar. Revisa tu conexión e intenta de nuevo.');
+    };
+  }
+
+  if (codigo && modo === 'verifyEmail') confirmar();
+  else if (codigo && modo === 'resetPassword') restablecer();
+  else pintar(tarjeta('enlace', 'Este enlace no es válido',
+    '<p>Ábrelo desde el botón del correo que te enviamos. Si copiaste la dirección a mano, puede que le falte una parte.</p>'));
+})();
+</script>
+</body>
+</html>
