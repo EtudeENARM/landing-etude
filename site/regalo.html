@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- El id del regalo va en la dirección: que no viaje a nadie más (ni a Google
+       Fonts) en la cabecera Referer, y que ningún buscador la guarde. -->
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="light dark">
+  <title>Un regalo para ti · Etude ENARM</title>
+  <meta name="description" content="Casos clínicos tipo ENARM con explicación, simulador y tutor con IA.">
+  <!-- La vista previa de WhatsApp: la misma para todos los regalos. WhatsApp no corre
+       el JavaScript de esta página, así que armarla no pide nada a la función. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Etude ENARM">
+  <meta property="og:title" content="14 días de Etude Pro, de regalo">
+  <meta property="og:description" content="Casos clínicos tipo ENARM con explicación, simulador y tutor con IA.">
+  <meta property="og:image" content="https://etudeenarm.com/assets/regalo-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Etude ENARM: 14 días de Etude Pro, un regalo para preparar el ENARM">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="/assets/logo-e-ink.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+  <!--
+    La página del regalo de Etude Pro: etudeenarm.com/regalo/<id>. La abre el amigo
+    al que alguien con Etude Pro le mandó el enlace desde la app.
+
+    Diseño y textos: el pliego de Etude CC-FF (docs/pliego-pases-regalo-2026-11-18.md)
+    y su maqueta (maquetas/maqueta_pases_regalo.html), aprobados por Mario el 18 y
+    19-nov-2026; los textos de Android y del aviso de «Comprar», el 21-nov
+    (maquetas/maqueta_regalo_textos_nuevos.html). Tipos y colores, los de la app.
+
+    Habla con la función `paseCanje` (Etude CC-FF, herramientas/pases/, CONTRATO.md):
+    `ver` al abrir, y `codigo` cuando la persona toca la casilla. Ninguna de las dos
+    gasta el regalo: se gasta cuando alguien lo canjea en la tienda.
+
+    No carga la medición de Meta ni nada más: de quien abre el enlace no se guarda
+    nada de su navegador (aviso de privacidad, «Regalos de Etude Pro»).
+  -->
+  <style>
+    :root {
+      --papel: #FFFFFF; --tinta: #171717; --sec: #4D4D4D; --ter: #767676; --alt: #EBEBEB;
+      --apag: #C9C9C9; --acc: #F2F2F2; --ficha: #E6E6E6;
+      --font: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --papel: #0A0A0A; --tinta: #EDEDED; --sec: #A1A1A1; --ter: #969696; --alt: #2E2E2E;
+        --apag: #454545; --acc: #1A1A1A; --ficha: #292929;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
+      background: var(--papel); color: var(--tinta); font-family: var(--font); font-size: 14px; line-height: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    p { margin: 0; text-wrap: pretty; }
+    a { color: inherit; }
+    button { font: inherit; color: inherit; }
+
+    .cab { height: 56px; border-bottom: 1px solid var(--alt); }
+    .cab-in, main, .pie-in { width: 100%; max-width: 480px; margin: 0 auto;
+      padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+    .cab-in { height: 100%; display: flex; align-items: center; }
+    .marca { display: flex; align-items: center; gap: 8px; font-size: 18px; line-height: 1; letter-spacing: -0.02em; text-decoration: none; }
+    .marca b { font-weight: 700; }
+    main { flex: 1; padding-top: 28px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 20px; }
+    .pie { border-top: 1px solid var(--alt); }
+    .pie-in { padding-top: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom, 0px)); display: flex; gap: 14px; flex-wrap: wrap;
+      color: var(--ter); font-size: 13px; line-height: 18px; }
+    .pie a { color: inherit; text-decoration: none; }
+
+    /* La escala de Geist de la app */
+    .h32 { font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -1.28px; margin: 0; text-wrap: balance; }
+    .h24 { font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.96px; margin: 0; text-wrap: balance; }
+    .h16 { font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: -0.32px; margin: 0; }
+    .l16 { font-size: 16px; line-height: 20px; }
+    .l13 { font-size: 13px; line-height: 16px; }
+    .l12s { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.02em; }
+    .c16 { font-size: 16px; line-height: 24px; }
+    .c14 { font-size: 14px; line-height: 20px; }
+    .c13 { font-size: 13px; line-height: 18px; }
+    .gris { color: var(--sec); }
+    .apagado { color: var(--ter); }
+
+    .titulo { display: flex; flex-direction: column; gap: 10px; }
+    .caja { border: 1px solid var(--alt); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .casilla { display: flex; gap: 12px; align-items: flex-start; width: calc(100% + 8px); padding: 12px; margin: 0 -4px; border: 0; border-radius: 12px;
+      background: transparent; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--alt); touch-action: manipulation; }
+    .casilla[aria-checked="true"] { background: var(--acc); box-shadow: inset 0 0 0 1px var(--tinta); }
+    .cuad { width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 0 0 1.5px var(--apag); flex: none; display: grid; place-items: center;
+      color: var(--papel); margin-top: -1px; }
+    .casilla[aria-checked="true"] .cuad { background: var(--tinta); box-shadow: none; }
+    .boton { min-height: 48px; border-radius: 24px; background: var(--tinta); color: var(--papel); display: flex; align-items: center; justify-content: center;
+      gap: 8px; font-size: 16px; line-height: 20px; font-weight: 500; padding: 14px 20px; text-align: center; text-decoration: none; border: 0;
+      cursor: pointer; touch-action: manipulation; width: 100%; }
+    .boton[aria-disabled="true"] { opacity: .55; cursor: default; }
+    .enlace { align-self: center; min-height: 44px; display: flex; align-items: center; color: var(--sec); background: none; border: 0; padding: 0 8px;
+      cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-size: 14px; touch-action: manipulation; }
+    .revelado { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+    /* Si el código no cabe junto a «Copiar», el botón baja; un código muy largo se parte entre grupos. */
+    .codigo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 12px; padding: 12px 12px 12px 14px;
+      border-radius: 12px; background: var(--acc); }
+    .codigo .num { flex: 0 1 auto; min-width: 0; font: 500 19px/24px var(--mono); letter-spacing: 0.06em; user-select: all; -webkit-user-select: all; }
+    .copiar { height: 36px; border-radius: 18px; padding: 0 14px; display: flex; align-items: center; gap: 6px; background: var(--papel); border: 0;
+      box-shadow: inset 0 0 0 1px var(--alt); font-size: 14px; font-weight: 500; cursor: pointer; flex: none; }
+    .pasos { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; counter-reset: p; }
+    .pasos li { display: flex; gap: 10px; counter-increment: p; }
+    .pasos li::before { content: counter(p); width: 22px; height: 22px; border-radius: 11px; background: var(--ficha); display: grid; place-items: center;
+      font: 500 12px/1 var(--mono); flex: none; color: var(--tinta); }
+    .pieza { border: 1px solid var(--alt); border-radius: 16px; padding: 16px; display: flex; gap: 12px; align-items: center; }
+    .pieza .fi { width: 44px; height: 44px; border-radius: 12px; background: var(--ficha); display: grid; place-items: center; flex: none; }
+    .pieza .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .insignia { flex: none; font-size: 12px; line-height: 16px; font-weight: 500; border-radius: 6px; padding: 2px 6px; white-space: nowrap;
+      background: var(--acc); color: var(--sec); box-shadow: inset 0 0 0 1px var(--alt); }
+    .telefono { display: flex; flex-direction: column; gap: 8px; }
+    .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--acc); border-radius: 12px; padding: 3px; }
+    .seg button { border: 0; background: transparent; border-radius: 9px; min-height: 40px; font-size: 15px; font-weight: 500; color: var(--sec); cursor: pointer; }
+    .seg button[aria-pressed="true"] { background: var(--papel); color: var(--tinta); box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1px var(--alt); }
+    .qr { display: flex; gap: 14px; align-items: center; }
+    .qr-img { width: 96px; height: 96px; flex: none; padding: 6px; border-radius: 10px; background: #FFFFFF; box-shadow: inset 0 0 0 1px var(--alt); }
+    .qr-img svg { display: block; width: 100%; height: 100%; }
+    .cargando { display: flex; align-items: center; gap: 14px; padding: 8px 0; }
+    .girando { width: 22px; height: 22px; flex: none; border-radius: 50%; border: 2.5px solid var(--alt); border-top-color: var(--tinta); animation: girar .8s linear infinite; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+    .aparece { animation: aparece .28s cubic-bezier(.23,1,.32,1); }
+    @keyframes aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .aparece { animation: none; } .girando { animation-duration: 2.4s; } }
+    :focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+    @media (hover: hover) and (pointer: fine) { .boton:not([aria-disabled="true"]):hover { opacity: .88; } .enlace:hover, .pie a:hover { color: var(--tinta); } }
+  </style>
+</head>
+<body>
+  <header class="cab">
+    <div class="cab-in">
+      <a class="marca" href="/" aria-label="Etude ENARM">
+        <svg width="20" height="19" viewBox="0 0 20 18.98" aria-hidden="true"><rect x="0" y="0" width="20" height="3.78" rx="1.89" fill="currentColor"/><rect x="0" y="7.42" width="12.72" height="3.78" rx="1.89" fill="currentColor"/><rect x="0" y="14.84" width="20" height="3.78" rx="1.89" fill="currentColor"/></svg>
+        <span>Etude <b>ENARM</b></span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido" aria-live="polite">
+    <div class="cargando"><div class="girando" aria-hidden="true"></div><p class="c16">Un momento…</p></div>
+  </main>
+  <noscript><main><p class="c16">Para ver tu regalo hace falta activar JavaScript en el navegador.</p></main></noscript>
+
+  <footer class="pie">
+    <div class="pie-in"><a href="/">Etude ENARM</a><a href="/privacidad.html">Aviso de privacidad</a><a href="/terminos.html">Términos</a></div>
+  </footer>
+
+<script>
+(() => {
+  'use strict';
+  const API = 'https://us-central1-residencia-2f69a.cloudfunctions.net/paseCanje';
+  const TIENDA_APP = {
+    apple: 'https://apps.apple.com/mx/app/etude-enarm/id6759030566',
+    google: 'https://play.google.com/store/apps/details?id=com.etudeenarm.app',
+  };
+  const NOMBRE = { apple: 'el App Store', google: 'Google Play' };
+  const CUENTA = { apple: 'tu cuenta de Apple', google: 'Google Play' };
+
+  const I = {
+    palomita: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    copiar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+    regalo: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C9 3 12 8 12 8s3-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>',
+  };
+
+  // ── Quién la abre y qué regalo ──────────────────────────────────────────────
+  const params = new URLSearchParams(location.search);
+  const partes = location.pathname.split('/').filter(Boolean);
+  // /regalo/<id> (la reescritura de netlify.toml); /regalo.html?pase=<id> al probar en local.
+  const pase = (partes[0] === 'regalo' && partes[1]) || params.get('pase') || '';
+  const idValido = /^[A-Za-z0-9]{16,64}$/.test(pase);
+
+  const ua = navigator.userAgent || '';
+  // iPadOS se anuncia como Macintosh; maxTouchPoints lo delata (como en descargar.html).
+  const esIOS = /iphone|ipad|ipod/i.test(ua) || (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  const esAndroid = /android/i.test(ua);
+  const forzada = params.get('t'); // ?t=ios | ?t=android, para probar
+  const telefono = forzada === 'ios' ? 'apple' : forzada === 'android' ? 'google'
+    : esIOS ? 'apple' : esAndroid ? 'google' : null; // null: una computadora
+
+  const S = {
+    vista: 'cargando',  // cargando | red | sin-usar | nocalifica | usado | caducado | no-existe | apagado | no-disponible
+    tiendas: ['apple'],
+    tienda: telefono,   // en una computadora, la que elija
+    marcada: false,     // la casilla
+    pidiendo: false,
+    respuesta: null,    // lo que dio `codigo` para S.tienda
+    verCodigo: false,
+    avisoRed: false,
+  };
+  const caja = document.getElementById('contenido');
+  const escapar = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // La función responde {result: {...}}; un error suyo, {error: {...}}; una caída de red lanza.
+  async function llamar(data) {
+    let r;
+    try {
+      r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }) });
+    } catch (_) { return { fallo: 'red' }; }
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j && j.result) return j.result;
+    return { fallo: (j && j.error && j.error.status) || 'red' };
+  }
+
+  // ── Piezas ──────────────────────────────────────────────────────────────────
+  const descargar = (t) => t
+    ? `<a class="boton" href="${TIENDA_APP[t]}">Descargar Etude en ${NOMBRE[t] === 'el App Store' ? 'el App Store' : 'Google Play'}</a>`
+    : '<a class="boton" href="/descargar">Descargar Etude</a>';
+  const piezaRegalo = (insignia) =>
+    `<div class="pieza"><div class="fi">${I.regalo}</div><div class="tx"><span class="h16">14 días de Etude Pro</span><span class="c13 gris">De regalo</span></div><span class="insignia">${insignia}</span></div>`;
+  const aviso = (titulo, texto, extra) =>
+    `<div class="titulo aparece"><h1 class="h24">${titulo}</h1><p class="c16 gris">${texto}</p></div>${extra || ''}`;
+  const letraChica = (t) =>
+    `<p class="c13 apagado">Son 14 días gratis del plan trimestral. Al terminar, la tienda te cobra el plan (en México, $399 cada 3 meses) salvo que lo canceles antes${t ? ` desde ${CUENTA[t]}` : ''}.</p>`;
+  // El código como lo dan las tiendas, en grupos de cuatro para leerlo; se copia sin espacios.
+  const agrupar = (c) => String(c).replace(/(.{4})(?=.)/g, '$1 ');
+
+  function pasos(t) {
+    // Android, cuando se abra: la sesión 2 vio (20-nov) que Google Play no ofrece
+    // instalar Etude después de canjear; el paso 2 de Android se revisa entonces.
+    const tercero = t === 'google'
+      ? 'Abre Etude en los próximos 3 días y crea tu cuenta: ya tendrás Etude Pro. Si no la abres a tiempo, Google Play cancela el regalo.'
+      : 'Abre Etude y crea tu cuenta: ya tendrás Etude Pro.';
+    return `<ol class="pasos c14 gris"><li>La tienda abre el canje con el código ya escrito.</li><li>Si no tienes Etude, te ofrece descargarla.</li><li>${tercero}</li></ol>`;
+  }
+
+  function trasLaCasilla() {
+    if (!S.marcada) return '';
+    const t = S.tienda;
+    if (S.pidiendo) return '<div class="revelado"><span class="boton" aria-disabled="true">Un momento…</span></div>';
+    if (S.avisoRed) return '<div class="revelado aparece"><p class="c14 gris">No se pudo pedir el código. Revisa tu conexión e intenta de nuevo.</p><button class="boton" type="button" data-pedir>Intentar de nuevo</button></div>';
+    const r = S.respuesta;
+    if (!r) return '';
+    if (r.estado === 'sin-codigos') {
+      return `<div class="revelado aparece"><span class="h16">Por ahora no hay códigos para ${NOMBRE[t]}</span><p class="c14 gris">Tu regalo sigue libre y no se gastó. Vuelve a abrir este enlace en unas horas.</p></div>`;
+    }
+    if (r.estado !== 'ok') return '';
+    return `<div class="revelado aparece">
+        <a class="boton" href="${escapar(r.enlace)}">Canjear en ${NOMBRE[t]}</a>
+        ${S.verCodigo
+          ? `<div class="revelado aparece" style="gap:10px;margin-top:0">
+              <span class="l13 gris">Tu código</span>
+              <div class="codigo"><span class="num" id="codigo">${escapar(agrupar(r.codigo))}</span><button class="copiar" type="button" data-copiar>${I.copiar}<span>Copiar</span></button></div>
+              <p class="c13 gris">${t === 'apple'
+                ? 'Si la tienda no se abrió: en el App Store, toca tu foto arriba a la derecha, luego «Canjear tarjeta de regalo o código», y escribe este código.'
+                : 'Si la tienda no se abrió: en Google Play, toca tu foto arriba a la derecha, luego «Pagos y suscripciones» › «Canjear código», y escribe este código.'}</p>
+            </div>`
+          : '<button class="enlace" type="button" data-ver-codigo style="min-height:36px">¿No se abrió la tienda? Ver tu código</button>'}
+        ${pasos(t)}
+        <p class="c13 gris">Si la tienda dice que el código ya se usó, alguien lo canjeó antes que tú.</p>
+        ${t === 'apple' ? '<p class="c13 gris">Si la tienda dice que no cumples los requisitos, toca «Cancelar»: «Comprar» te cobra el plan completo.</p>' : ''}
+      </div>`;
+  }
+
+  function elegirTelefono() {
+    // Solo en una computadora: el código es de la tienda que elija.
+    if (telefono) return '';
+    const b = (t, txt) => `<button type="button" data-tienda="${t}" aria-pressed="${S.tienda === t}">${txt}</button>`;
+    return `<div class="telefono"><span class="h16">¿En qué teléfono vas a usar Etude?</span>
+        <div class="seg" role="group" aria-label="Tu teléfono">${b('apple', 'iPhone')}${b('google', 'Android')}</div>
+        <div class="qr"><div class="qr-img" id="qr" aria-hidden="true"></div><p class="c13 gris">O ábrela en tu teléfono con la cámara.</p></div>
+      </div>`;
+  }
+
+  // ── Las vistas ──────────────────────────────────────────────────────────────
+  function pintar() {
+    const t = S.tienda;
+    let html;
+    switch (S.vista) {
+      case 'cargando':
+        html = '<div class="cargando"><div class="girando" aria-hidden="true"></div><p class="c16">Un momento…</p></div>';
+        break;
+      case 'red':
+        html = aviso('No pudimos abrir tu regalo', 'Revisa tu conexión e intenta de nuevo.', '<button class="boton" type="button" data-reintentar>Intentar de nuevo</button>');
+        break;
+      case 'sin-usar':
+        if (t && !S.tiendas.includes(t)) { S.vista = 'no-disponible'; return pintar(); }
+        html = `<div class="titulo"><span class="l12s gris">UN REGALO PARA TI</span><h1 class="h32">Te regalaron 14 días de Etude Pro</h1>
+            <p class="c16 gris">Casos clínicos tipo ENARM con su explicación, simulador por especialidad y un tutor con IA para tus dudas.</p></div>
+          ${elegirTelefono()}
+          <div class="caja"><span class="h16">Antes de canjearlo</span>
+            <p class="c14 gris">Este regalo es para quien nunca ha tenido Etude Pro ni su prueba gratis.</p>
+            <button class="casilla" type="button" role="checkbox" aria-checked="${S.marcada}" data-casilla${t ? '' : ' aria-disabled="true"'}>
+              <span class="cuad">${S.marcada ? I.palomita : ''}</span><span class="l16">Nunca he tenido Etude Pro ni su prueba gratis</span></button>
+            ${trasLaCasilla()}
+          </div>
+          ${S.marcada ? '' : '<button class="enlace" type="button" data-no-califica>Ya tuve Etude Pro o su prueba</button>'}
+          ${letraChica(t)}`;
+        break;
+      case 'nocalifica':
+        html = aviso('Este regalo es para quien nunca ha tenido Etude Pro',
+          'Tampoco sirve si ya tuviste su prueba gratis. El regalo sigue libre: si conoces a alguien que nunca lo ha tenido, pásale el enlace.',
+          descargar(t) + '<button class="enlace" type="button" data-me-equivoque>Me equivoqué: nunca lo he tenido</button>');
+        break;
+      case 'no-disponible':
+        // Solo iPhone por ahora (Mario, 21-nov-2026). El regalo no se gasta.
+        html = aviso('Este regalo es para iPhone',
+          'En Android todavía no se puede canjear. Pásale el enlace a alguien con iPhone que nunca haya tenido Etude Pro, y prueba tú Etude Pro 7 días gratis desde la app.',
+          descargar(t) + (telefono ? '' : '<button class="enlace" type="button" data-otro-telefono>Elegir otro teléfono</button>'));
+        break;
+      case 'usado':
+        html = piezaRegalo('Ya se usó') + aviso('Este regalo ya se usó',
+          'Ya lo canjearon. Si fuiste tú, abre Etude: ahí tienes tu Etude Pro. Si no, y nunca has tenido Etude Pro, puedes probarlo 7 días gratis desde la app.', descargar(t));
+        break;
+      case 'caducado':
+        html = piezaRegalo('Caducó') + aviso('Este regalo caducó',
+          'Los regalos duran 30 días sin canjearse. Si nunca has tenido Etude Pro, puedes probarlo 7 días gratis desde la app.', descargar(t));
+        break;
+      case 'apagado':
+        html = aviso('Este regalo no se puede canjear por ahora', 'Vuelve a abrir el enlace más tarde.', descargar(t));
+        break;
+      default: // no-existe, y lo que no se reconozca
+        html = aviso('Este regalo ya no está disponible',
+          'Puede que el enlace esté incompleto o que el regalo ya no exista. Si nunca has tenido Etude Pro, puedes probarlo 7 días gratis desde la app.', descargar(t));
+    }
+    caja.innerHTML = html;
+    const qr = document.getElementById('qr');
+    if (qr) dibujarQR(qr);
+  }
+
+  // ── Lo que pide a la función ────────────────────────────────────────────────
+  async function ver() {
+    if (!idValido) { S.vista = 'no-existe'; return pintar(); }
+    S.vista = 'cargando'; pintar();
+    const r = await llamar({ accion: 'ver', pase });
+    if (r.fallo) { S.vista = 'red'; return pintar(); }
+    if (Array.isArray(r.tiendas)) S.tiendas = r.tiendas;
+    S.vista = r.estado || 'no-existe';
+    pintar();
+  }
+
+  async function pedirCodigo() {
+    const t = S.tienda;
+    S.pidiendo = true; S.avisoRed = false; pintar();
+    const r = await llamar({ accion: 'codigo', pase, tienda: t });
+    S.pidiendo = false;
+    if (S.tienda !== t || !S.marcada) return pintar(); // cambió de idea mientras tanto
+    if (r.fallo) { S.avisoRed = true; return pintar(); }
+    if (Array.isArray(r.tiendas)) S.tiendas = r.tiendas;
+    if (['ok', 'sin-codigos'].includes(r.estado)) S.respuesta = r;
+    else { S.vista = r.estado || 'no-existe'; S.marcada = false; }
+    pintar();
+  }
+
+  caja.addEventListener('click', (e) => {
+    const el = e.target.closest('button, [data-tienda]');
+    if (!el) return;
+    if (el.hasAttribute('data-reintentar')) return ver();
+    if (el.hasAttribute('data-casilla')) {
+      if (!S.tienda) { const g = caja.querySelector('.seg button'); if (g) g.focus(); return; }
+      S.marcada = !S.marcada;
+      if (S.marcada && !S.respuesta) return pedirCodigo();
+      return pintar();
+    }
+    if (el.hasAttribute('data-pedir')) return pedirCodigo();
+    if (el.hasAttribute('data-ver-codigo')) { S.verCodigo = true; return pintar(); }
+    if (el.hasAttribute('data-no-califica')) { S.vista = 'nocalifica'; return pintar(); }
+    if (el.hasAttribute('data-me-equivoque')) { S.vista = 'sin-usar'; return pintar(); }
+    if (el.hasAttribute('data-otro-telefono')) { S.vista = 'sin-usar'; S.tienda = null; S.marcada = false; return pintar(); }
+    if (el.dataset.tienda) {
+      if (S.tienda !== el.dataset.tienda) { S.tienda = el.dataset.tienda; S.respuesta = null; S.marcada = false; S.verCodigo = false; S.avisoRed = false; }
+      return pintar();
+    }
+    if (el.hasAttribute('data-copiar') && S.respuesta) {
+      const etiqueta = el.querySelector('span');
+      const marcarCopiado = () => { etiqueta.textContent = 'Copiado'; };
+      const seleccionar = () => {
+        const n = document.getElementById('codigo');
+        const rango = document.createRange(); rango.selectNodeContents(n);
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rango);
+      };
+      try {
+        navigator.clipboard.writeText(String(S.respuesta.codigo)).then(marcarCopiado, seleccionar);
+      } catch (_) { seleccionar(); }
+    }
+  });
+
+  // El QR de esta misma página, para pasarla al teléfono. La librería solo se baja
+  // en una computadora.
+  function dibujarQR(nodo) {
+    const pintarQR = () => {
+      try {
+        const q = window.qrcode(0, 'M');
+        q.addData(location.href.split('#')[0]);
+        q.make();
+        nodo.innerHTML = q.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
+      } catch (_) { nodo.parentNode.hidden = true; }
+    };
+    if (window.qrcode) return pintarQR();
+    const s = document.createElement('script');
+    s.src = '/assets/qrcode.js';
+    s.onload = pintarQR;
+    s.onerror = () => { nodo.parentNode.hidden = true; };
+    document.head.appendChild(s);
+  }
+
+  ver();
+})();
+</script>
+</body>
+</html>

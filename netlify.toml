@@ -38,3 +38,11 @@
   from = "/cuenta"
   to = "/cuenta.html"
   status = 200
+
+# La página del regalo de Etude Pro: el enlace que se manda desde la app
+# (etudeenarm.com/regalo/<id>, función paseRegalo en Etude CC-FF/herramientas/pases/).
+# 200 = reescritura: la barra conserva el id, que regalo.html lee de la dirección.
+[[redirects]]
+  from = "/regalo/*"
+  to = "/regalo.html"
+  status = 200
